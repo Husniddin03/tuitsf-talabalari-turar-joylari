@@ -77,7 +77,8 @@ class MessagesController extends Controller
             ->inline()
             ->row([
                 Keyboard::inlineButton(['text' => "Barcha talabalar", 'callback_data' => "all_students_1"]),
-                Keyboard::inlineButton(['text' => "Qidirish", 'callback_data' => "search"])
+                Keyboard::inlineButton(['text' => "Qidirish", 'callback_data' => "search"]),
+                Keyboard::inlineButton(['text' => "Excel yuklash", 'callback_data' => "download"])
             ]);
         Telegram::sendPhoto([
             'chat_id' => $message->chat->id,
@@ -117,7 +118,7 @@ class MessagesController extends Controller
             [
                 [
                     'text' => '🔙 Orqaga',
-                    'callback_data' => '/start'
+                    'callback_data' => 'start'
                 ]
             ]
         ];
