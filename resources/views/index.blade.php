@@ -133,6 +133,16 @@
                         </svg>
                         Adminlar
                     </button>
+                    <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: inline;"
+                        onsubmit="return confirm('Haqiqatan ham tizimdan chiqmoqchimisiz?')">
+                        @csrf
+                        <button type="submit" class="tab-btn"
+                            style="color: red; background: none; border: none; cursor: pointer;">
+                            Logout
+                        </button>
+                    </form>
+
+
                 </div>
 
                 <!-- Students Tab -->
