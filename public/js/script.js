@@ -646,7 +646,7 @@ class UIManager {
                     <td>${student.narx || "-"}</td>
                     <td>${student.ota_ona || "-"}</td>
                     <td>${student.ota_ona_telefoni || "-"}</td>
-                    <td>${student.url_manzil || "-"}</td>
+                    <td><a href='${student.url_manzil || '#'}' target="_blank">${student.url_manzil? "Xaritadan ko'rish" : "-"}</a></td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn-icon" onclick="ui.editStudent(${
