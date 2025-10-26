@@ -20,6 +20,11 @@ return new class extends Migration
             $table->string('tyutori')->nullable();
             $table->string('hudud')->nullable();
             $table->string('manzil')->nullable();
+            $table->string('uy_egasi')->nullable();
+            $table->string('uy_egasi_telefoni')->nullable();
+            $table->string('narx')->nullable();
+            $table->string('ota_ona')->nullable();
+            $table->string('ota_ona_telefoni')->nullable();
             $table->string('url_manzil')->nullable();
             $table->timestamps();
         });

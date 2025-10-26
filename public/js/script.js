@@ -32,14 +32,19 @@ class DataManager {
             console.log("Using Laravel students data:", window.mockStudents1);
             const laravelStudents = window.mockStudents1.map((student) => ({
                 id: student.id,
-                fish: student.fish || "",
-                fakultet: student.fakultet || "",
-                guruh: student.guruh || "",
-                telefon: student.telefon || "",
-                tyutori: student.tyutori || "",
-                hudud: student.hudud || "",
-                manzil: student.manzil || "",
-                url_manzil: student.url_manzil || "",
+                fish: student.fish || "-",
+                fakultet: student.fakultet || "-",
+                guruh: student.guruh || "-",
+                telefon: student.telefon || "-",
+                tyutori: student.tyutori || "-",
+                hudud: student.hudud || "-",
+                manzil: student.manzil || "-",
+                uy_egasi: student.uy_egasi || "-",
+                uy_egasi_telefoni: student.uy_egasi_telefoni || "-",
+                narx: student.narx || "-",
+                ota_ona: student.ota_ona || "-",
+                ota_ona_telefoni: student.ota_ona_telefoni || "-",
+                url_manzil: student.url_manzil || "-",
                 created_at: student.created_at,
                 updated_at: student.updated_at,
             }));
@@ -61,22 +66,13 @@ class DataManager {
                 tyutori: "Prof. Karimov",
                 hudud: "Toshkent",
                 manzil: "Chilonzor tumani",
-                url_manzil: "https://maps.google.com/...",
+                uy_egasi: "Shodmonov Alisher",
+                uy_egasi_telefoni: "+998901234567",
+                narx: "500 000",
+                ota_ona: "Ahmadov Dilshod, Ahmadova Madina",
+                ota_ona_telefoni: "+998901234567",
                 created_at: "2024-01-15T10:30:00Z",
                 updated_at: "2024-01-15T10:30:00Z",
-            },
-            {
-                id: 2,
-                fish: "Karimova Malika Shavkatovna",
-                fakultet: "Iqtisodiyot",
-                guruh: "EK-22",
-                telefon: "+998907654321",
-                tyutori: "Dots. Rahimov",
-                hudud: "Samarqand",
-                manzil: "Registon ko'chasi",
-                url_manzil: "",
-                created_at: "2024-01-16T14:20:00Z",
-                updated_at: "2024-01-16T14:20:00Z",
             },
         ];
 
@@ -106,13 +102,13 @@ class DataManager {
             console.log("Using Laravel users data:", window.mockUsers1);
             const laravelUsers = window.mockUsers1.map((user) => ({
                 id: user.id,
-                name: user.name || "",
-                email: user.email || "",
+                name: user.name || "-",
+                email: user.email || "-",
                 chat_id: user.chat_id || 0,
                 role: user.role || "user",
-                password: user.password || "",
-                email_verified_at: user.email_verified_at || "",
-                remember_token: user.remember_token || "",
+                password: user.password || "-",
+                email_verified_at: user.email_verified_at || "-",
+                remember_token: user.remember_token || "-",
                 created_at: user.created_at,
                 updated_at: user.updated_at,
             }));
@@ -612,8 +608,8 @@ class UIManager {
         const sortDirection = this.dataManager.sortDirection.students;
 
         students.sort((a, b) => {
-            const aValue = a[sortField]?.toString() || "";
-            const bValue = b[sortField]?.toString() || "";
+            const aValue = a[sortField]?.toString() || "-";
+            const bValue = b[sortField]?.toString() || "-";
 
             if (sortDirection === "asc") {
                 return aValue.localeCompare(bValue);
@@ -645,6 +641,12 @@ class UIManager {
                     <td>${student.telefon || "-"}</td>
                     <td>${student.tyutori || "-"}</td>
                     <td>${student.hudud || "-"}</td>
+                    <td>${student.uy_egasi || "-"}</td>
+                    <td>${student.uy_egasi_telefoni || "-"}</td>
+                    <td>${student.narx || "-"}</td>
+                    <td>${student.ota_ona || "-"}</td>
+                    <td>${student.ota_ona_telefoni || "-"}</td>
+                    <td>${student.url_manzil || "-"}</td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn-icon" onclick="ui.editStudent(${
@@ -690,7 +692,7 @@ class UIManager {
         }
 
         const searchTerm =
-            document.getElementById("studentSearch")?.value || "";
+            document.getElementById("studentSearch")?.value || "-";
         this.renderStudentsTable(searchTerm);
     }
 
@@ -748,8 +750,8 @@ class UIManager {
         const sortDirection = this.dataManager.sortDirection.users;
 
         users.sort((a, b) => {
-            const aValue = a[sortField]?.toString() || "";
-            const bValue = b[sortField]?.toString() || "";
+            const aValue = a[sortField]?.toString() || "-";
+            const bValue = b[sortField]?.toString() || "-";
 
             if (sortDirection === "asc") {
                 return aValue.localeCompare(bValue);
@@ -832,7 +834,7 @@ class UIManager {
             this.dataManager.sortDirection.users = "asc";
         }
 
-        const searchTerm = document.getElementById("userSearch")?.value || "";
+        const searchTerm = document.getElementById("userSearch")?.value || "-";
         this.renderUsersTable(searchTerm);
     }
 
@@ -859,19 +861,23 @@ class UIManager {
 
         if (student) {
             title.textContent = "Talabani tahrirlash";
-            document.getElementById("studentFish").value = student.fish || "";
+            document.getElementById("studentFish").value = student.fish || "-";
             document.getElementById("studentFakultet").value =
-                student.fakultet || "";
-            document.getElementById("studentGuruh").value = student.guruh || "";
+                student.fakultet || "-";
+            document.getElementById("studentGuruh").value = student.guruh || "-";
             document.getElementById("studentTelefon").value =
-                student.telefon || "";
+                student.telefon || "-";
             document.getElementById("studentTyutori").value =
-                student.tyutori || "";
-            document.getElementById("studentHudud").value = student.hudud || "";
-            document.getElementById("studentManzil").value =
-                student.manzil || "";
+                student.tyutori || "-";
+            document.getElementById("studentHudud").value = student.hudud || "-";
+            document.getElementById("studentManzil").value = student.manzil || "-";
+            document.getElementById("studentUyEgasi").value = student.uy_egasi || "-";
+            document.getElementById("studentUyEgasiTelefoni").value = student.uy_egasi_telefoni || "-";
+            document.getElementById("studentNarxi").value = student.narx || "-";
+            document.getElementById("studentOtaOna").value = student.ota_ona || "-";
+            document.getElementById("studentOtaOnaTelefoni").value = student.ota_ona_telefoni || "-";
             document.getElementById("studentUrlManzil").value =
-                student.url_manzil || "";
+                student.url_manzil || "-";
             document.getElementById("saveStudentBtn").textContent = "Saqlash";
         } else {
             title.textContent = "Yangi talaba qo'shish";
@@ -892,15 +898,19 @@ class UIManager {
 
     handleStudentSubmit() {
         const studentData = {
-            fish: document.getElementById("studentFish")?.value || "",
-            fakultet: document.getElementById("studentFakultet")?.value || "",
-            guruh: document.getElementById("studentGuruh")?.value || "",
-            telefon: document.getElementById("studentTelefon")?.value || "",
-            tyutori: document.getElementById("studentTyutori")?.value || "",
-            hudud: document.getElementById("studentHudud")?.value || "",
-            manzil: document.getElementById("studentManzil")?.value || "",
-            url_manzil:
-                document.getElementById("studentUrlManzil")?.value || "",
+            fish: document.getElementById("studentFish")?.value || "-",
+            fakultet: document.getElementById("studentFakultet")?.value || "-",
+            guruh: document.getElementById("studentGuruh")?.value || "-",
+            telefon: document.getElementById("studentTelefon")?.value || "-",
+            tyutori: document.getElementById("studentTyutori")?.value || "-",
+            hudud: document.getElementById("studentHudud")?.value || "-",
+            manzil: document.getElementById("studentManzil")?.value || "-",
+            uy_egasi: document.getElementById("studentUyEgasi")?.value || "-",
+            uy_egasi_telefoni: document.getElementById("studentUyEgasiTelefoni")?.value || "-",
+            narx: document.getElementById("studentNarxi")?.value || "-",
+            ota_ona: document.getElementById("studentOtaOna")?.value || "-",
+            ota_ona_telefoni: document.getElementById("studentOtaOnaTelefoni")?.value || "-",
+            url_manzil: document.getElementById("studentUrlManzil")?.value || "-",
         };
 
         if (this.dataManager.currentStudentId) {
@@ -945,11 +955,11 @@ class UIManager {
 
         if (user) {
             title.textContent = "Foydalanuvchini tahrirlash";
-            document.getElementById("userName").value = user.name || "";
-            document.getElementById("userEmail").value = user.email || "";
-            document.getElementById("userChatId").value = user.chat_id || "";
+            document.getElementById("userName").value = user.name || "-";
+            document.getElementById("userEmail").value = user.email || "-";
+            document.getElementById("userChatId").value = user.chat_id || "-";
             document.getElementById("userRole").value = user.role || "user";
-            document.getElementById("userPassword").value = user.password || "";
+            document.getElementById("userPassword").value = user.password || "-";
 
             // Laravel dan kelgan sana formatini to'g'rilash
             if (user.email_verified_at) {
@@ -985,13 +995,13 @@ class UIManager {
 
     handleUserSubmit() {
         const userData = {
-            name: document.getElementById("userName")?.value || "",
-            email: document.getElementById("userEmail")?.value || "",
+            name: document.getElementById("userName")?.value || "-",
+            email: document.getElementById("userEmail")?.value || "-",
             chat_id: parseInt(
                 document.getElementById("userChatId")?.value || "0"
             ),
             role: document.getElementById("userRole")?.value || "user",
-            password: document.getElementById("userPassword")?.value || "",
+            password: document.getElementById("userPassword")?.value || "-",
             email_verified_at:
                 document.getElementById("userEmailVerified")?.value || null,
             remember_token: null,

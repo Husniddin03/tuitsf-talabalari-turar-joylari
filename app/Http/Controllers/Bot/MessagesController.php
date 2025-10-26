@@ -102,13 +102,19 @@ class MessagesController extends Controller
         }
 
         $text = "👤 *Student Ma'lumotlari*\n\n";
-        $text .= "📝 F.I.SH: {$student->fish}\n";
-        $text .= "🎓 Fakultet: {$student->fakultet}\n";
-        $text .= "👥 Guruh: {$student->guruh}\n";
-        $text .= "📞 Telefon: {$student->telefon}\n";
-        $text .= "👨‍🏫 Tyutori: {$student->tyutori}\n";
-        $text .= "🌍 Hudud: {$student->hudud}\n";
-        $text .= "📍 Manzil: {$student->manzil}\n";
+        $text .= "🧑‍🎓 *F.I.SH:* {$student->fish}\n";
+        $text .= "🏛️ *Fakultet:* {$student->fakultet}\n";
+        $text .= "👥 *Guruh:* {$student->guruh}\n";
+        $text .= "📞 *Telefon:* {$student->telefon}\n";
+        $text .= "👨‍🏫 *Tyutori:* {$student->tyutori}\n";
+        $text .= "🌍 *Hudud:* {$student->hudud}\n";
+        $text .= "🏠 *Uy egasi:* {$student->uy_egasi}\n";
+        $text .= "📱 *Uy egasi telefoni:* {$student->uy_egasi_telefoni}\n";
+        $text .= "💰 *Narxi:* {$student->narx}\n";
+        $text .= "👨‍👩‍👧‍👦 *Ota-onasi:* {$student->ota_ona}\n";
+        $text .= "📞 *Ota-onasi telefoni:* {$student->ota_ona_telefoni}\n";
+        $text .= "📍 *Manzil:* {$student->manzil}\n";
+
 
         if (!empty($student->url_manzil)) {
             $text .= "🗺 [Xaritada ko'rish]({$student->url_manzil})\n";

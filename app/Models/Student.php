@@ -13,6 +13,11 @@ class Student extends Model
         'telefon',
         'tyutori',
         'hudud',
+        'uy_egasi',
+        'uy_egasi_telefoni',
+        'narx',
+        'ota_ona',
+        'ota_ona_telefoni',
         'manzil',
         'url_manzil',
     ];

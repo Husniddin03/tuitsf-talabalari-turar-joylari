@@ -26,6 +26,11 @@ class WebController extends Controller
             'tyutori' => 'nullable|string|max:255',
             'hudud' => 'nullable|string|max:255',
             'manzil' => 'nullable|string|max:255',
+            'uy_egasi' => 'nullable|string|max:255',
+            'uy_egasi_telefoni' => 'nullable|string|max:255',
+            'narx' => 'nullable|string|max:255',
+            'ota_ona' => 'nullable|string|max:255',
+            'ota_ona_telefoni' => 'nullable|string|max:255',
             'url_manzil' => 'nullable|url|max:255',
         ]);
 
@@ -46,6 +51,11 @@ class WebController extends Controller
             'tyutori' => 'nullable|string|max:255',
             'hudud' => 'nullable|string|max:255',
             'manzil' => 'nullable|string|max:255',
+            'uy_egasi' => 'nullable|string|max:255',
+            'uy_egasi_telefoni' => 'nullable|string|max:255',
+            'narx' => 'nullable|string|max:255',
+            'ota_ona' => 'nullable|string|max:255',
+            'ota_ona_telefoni' => 'nullable|string|max:255',
             'url_manzil' => 'nullable|url|max:255',
         ]);
 

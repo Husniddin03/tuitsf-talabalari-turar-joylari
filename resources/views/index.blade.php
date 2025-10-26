@@ -177,6 +177,12 @@
                                         <th data-sort="telefon">Telefon <span class="sort-icon">↕</span></th>
                                         <th data-sort="tyutori">Tyutori <span class="sort-icon">↕</span></th>
                                         <th data-sort="hudud">Hudud <span class="sort-icon">↕</span></th>
+                                        <th data-sort="uy_egasi">Uy egasi <span class="sort-icon">↕</span></th>
+                                        <th data-sort="uy_egasi_telefoni">Uy egasi telefoni <span class="sort-icon">↕</span></th>
+                                        <th data-sort="narx">Narxi <span class="sort-icon">↕</span></th>
+                                        <th data-sort="ota_ona">Ota ona <span class="sort-icon">↕</span></th>
+                                        <th data-sort="ota_ona_telefoni">Ota ona telefoni <span class="sort-icon">↕</span></th>
+                                        <th data-sort="url_manzil">Url manzil <span class="sort-icon">↕</span></th>
                                         <th>Amallar</th>
                                     </tr>
                                 </thead>
@@ -211,8 +217,9 @@
                             </svg>
                             <input type="text" id="userSearch" placeholder="Qidirish..." class="search-input">
                         </div>
-                        <div class="table-container">
-                            <table class="data-table" id="usersTable">
+                        <div class="table-container" style="width: 100% !important; overflow-x: auto !important">
+                            <table class="data-table" id="usersTable"
+                                style="width: 100%;  border-collapse: collapse;">
                                 <thead>
                                     <tr>
                                         <th data-sort="id">ID <span class="sort-icon">↕</span></th>
@@ -271,8 +278,28 @@
                     <input name="hudud" type="text" id="studentHudud">
                 </div>
                 <div class="form-group">
+                    <label for="studentUyEgasi">Uy egasi</label>
+                    <input name="uy_egasi" type="text" id="studentUyEgasi">
+                </div>
+                <div class="form-group">
+                    <label for="studentUyEgasiTelefoni">Uy egasi telefoni</label>
+                    <input name="uy_egasi_telefoni" type="text" id="studentUyEgasiTelefoni">
+                </div>
+                <div class="form-group">
+                    <label for="studentNarxi">Narxi</label>
+                    <input name="narx" type="text" id="studentNarxi">
+                </div>
+                <div class="form-group">
+                    <label for="studentOtaOna">Ota - Oan</label>
+                    <input name="ota_ona" type="text" id="studentOtaOna">
+                </div>
+                <div class="form-group">
+                    <label for="studentOtaOnaTelefoni">Ota - Oan telefoni</label>
+                    <input name="ota_ona_telefoni" type="text" id="studentOtaOnaTelefoni">
+                </div>
+                <div class="form-group">
                     <label for="studentManzil">Manzil</label>
-                    <input manzil type="text" id="studentManzil">
+                    <input name="'manzil" type="text" id="studentManzil">
                 </div>
                 <div class="form-group">
                     <label for="studentUrlManzil">Manzil URL</label>

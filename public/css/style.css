@@ -5,7 +5,8 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, sans-serif;
     background-color: #f8fafc;
     color: #334155;
     line-height: 1.6;
@@ -286,12 +287,12 @@ body {
 }
 
 .data-table th.sort-asc .sort-icon::before {
-    content: '↑';
+    content: "↑";
     color: #3b82f6;
 }
 
 .data-table th.sort-desc .sort-icon::before {
-    content: '↓';
+    content: "↓";
     color: #3b82f6;
 }
 
@@ -503,44 +504,44 @@ form {
     .container {
         padding: 0 0.5rem;
     }
-    
+
     .header-content {
         flex-direction: column;
         height: auto;
         padding: 1rem 0;
         gap: 1rem;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .table-header {
         flex-direction: column;
         align-items: stretch;
         gap: 1rem;
     }
-    
+
     .tab-buttons {
         flex-direction: column;
     }
-    
+
     .tab-btn {
         justify-content: center;
     }
-    
+
     .table-container {
         overflow-x: auto;
     }
-    
+
     .data-table {
         min-width: 600px;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .modal-content {
         width: 95%;
         margin: 1rem;
@@ -571,4 +572,20 @@ form {
 * {
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Asosiy jadval dizayni */
+.data-table {
+    border-collapse: collapse;
+    min-width: 900px;
+    /* Jadval kengroq bo‘lishi uchun */
+    width: max-content;
+    /* Jadval ustunlari bo‘yicha kengayadi */
 }
