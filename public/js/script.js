@@ -32,19 +32,19 @@ class DataManager {
             console.log("Using Laravel students data:", window.mockStudents1);
             const laravelStudents = window.mockStudents1.map((student) => ({
                 id: student.id,
-                fish: student.fish || "-",
-                fakultet: student.fakultet || "-",
-                guruh: student.guruh || "-",
-                telefon: student.telefon || "-",
-                tyutori: student.tyutori || "-",
-                hudud: student.hudud || "-",
-                manzil: student.manzil || "-",
-                uy_egasi: student.uy_egasi || "-",
-                uy_egasi_telefoni: student.uy_egasi_telefoni || "-",
-                narx: student.narx || "-",
-                ota_ona: student.ota_ona || "-",
-                ota_ona_telefoni: student.ota_ona_telefoni || "-",
-                url_manzil: student.url_manzil || "-",
+                fish: student.fish || "",
+                fakultet: student.fakultet || "",
+                guruh: student.guruh || "",
+                telefon: student.telefon || "",
+                tyutori: student.tyutori || "",
+                hudud: student.hudud || "",
+                manzil: student.manzil || "",
+                uy_egasi: student.uy_egasi || "",
+                uy_egasi_telefoni: student.uy_egasi_telefoni || "",
+                narx: student.narx || "",
+                ota_ona: student.ota_ona || "",
+                ota_ona_telefoni: student.ota_ona_telefoni || "",
+                url_manzil: student.url_manzil || "",
                 created_at: student.created_at,
                 updated_at: student.updated_at,
             }));
@@ -102,13 +102,13 @@ class DataManager {
             console.log("Using Laravel users data:", window.mockUsers1);
             const laravelUsers = window.mockUsers1.map((user) => ({
                 id: user.id,
-                name: user.name || "-",
-                email: user.email || "-",
+                name: user.name || "",
+                email: user.email || "",
                 chat_id: user.chat_id || 0,
                 role: user.role || "user",
-                password: user.password || "-",
-                email_verified_at: user.email_verified_at || "-",
-                remember_token: user.remember_token || "-",
+                password: user.password || "",
+                email_verified_at: user.email_verified_at || "",
+                remember_token: user.remember_token || "",
                 created_at: user.created_at,
                 updated_at: user.updated_at,
             }));
@@ -898,19 +898,19 @@ class UIManager {
 
     handleStudentSubmit() {
         const studentData = {
-            fish: document.getElementById("studentFish")?.value || "-",
-            fakultet: document.getElementById("studentFakultet")?.value || "-",
-            guruh: document.getElementById("studentGuruh")?.value || "-",
-            telefon: document.getElementById("studentTelefon")?.value || "-",
-            tyutori: document.getElementById("studentTyutori")?.value || "-",
-            hudud: document.getElementById("studentHudud")?.value || "-",
-            manzil: document.getElementById("studentManzil")?.value || "-",
-            uy_egasi: document.getElementById("studentUyEgasi")?.value || "-",
-            uy_egasi_telefoni: document.getElementById("studentUyEgasiTelefoni")?.value || "-",
-            narx: document.getElementById("studentNarxi")?.value || "-",
-            ota_ona: document.getElementById("studentOtaOna")?.value || "-",
-            ota_ona_telefoni: document.getElementById("studentOtaOnaTelefoni")?.value || "-",
-            url_manzil: document.getElementById("studentUrlManzil")?.value || "-",
+            fish: document.getElementById("studentFish")?.value || "",
+            fakultet: document.getElementById("studentFakultet")?.value || "",
+            guruh: document.getElementById("studentGuruh")?.value || "",
+            telefon: document.getElementById("studentTelefon")?.value || "",
+            tyutori: document.getElementById("studentTyutori")?.value || "",
+            hudud: document.getElementById("studentHudud")?.value || "",
+            manzil: document.getElementById("studentManzil")?.value || "",
+            uy_egasi: document.getElementById("studentUyEgasi")?.value || "",
+            uy_egasi_telefoni: document.getElementById("studentUyEgasiTelefoni")?.value || "",
+            narx: document.getElementById("studentNarxi")?.value || "",
+            ota_ona: document.getElementById("studentOtaOna")?.value || "",
+            ota_ona_telefoni: document.getElementById("studentOtaOnaTelefoni")?.value || "",
+            url_manzil: document.getElementById("studentUrlManzil")?.value || "",
         };
 
         if (this.dataManager.currentStudentId) {
@@ -995,13 +995,13 @@ class UIManager {
 
     handleUserSubmit() {
         const userData = {
-            name: document.getElementById("userName")?.value || "-",
-            email: document.getElementById("userEmail")?.value || "-",
+            name: document.getElementById("userName")?.value || "",
+            email: document.getElementById("userEmail")?.value || "",
             chat_id: parseInt(
                 document.getElementById("userChatId")?.value || "0"
             ),
             role: document.getElementById("userRole")?.value || "user",
-            password: document.getElementById("userPassword")?.value || "-",
+            password: document.getElementById("userPassword")?.value || "",
             email_verified_at:
                 document.getElementById("userEmailVerified")?.value || null,
             remember_token: null,
