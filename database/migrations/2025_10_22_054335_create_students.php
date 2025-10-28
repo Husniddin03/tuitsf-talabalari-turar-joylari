@@ -13,19 +13,27 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('fish');
-            $table->string('fakultet');
-            $table->string('guruh');
+            $table->string('talaba_id')->unique();
+            $table->string('fish')->nullable();
+            $table->string('fakultet')->nullable();
+            $table->string('guruh')->nullable();
             $table->string('telefon')->nullable();
             $table->string('tyutori')->nullable();
             $table->string('hudud')->nullable();
-            $table->string('manzil')->nullable();
+            $table->string('doimiy_yashash_viloyati')->nullable();
+            $table->string('doimiy_yashash_tumani')->nullable();
+            $table->string('doimiy_yashash_manzili')->nullable();
+            $table->string('doimiy_yashash_manzili_urli')->nullable();
+            $table->string('vaqtincha_yashash_viloyati')->nullable();
+            $table->string('vaqtincha_yashash_tumani')->nullable();
+            $table->string('vaqtincha_yashash_manzili')->nullable();
+            $table->string('vaqtincha_yashash_manzili_urli')->nullable();
             $table->string('uy_egasi')->nullable();
             $table->string('uy_egasi_telefoni')->nullable();
+            $table->string('yotoqxona_nomeri')->nullable();
             $table->string('narx')->nullable();
             $table->string('ota_ona')->nullable();
             $table->string('ota_ona_telefoni')->nullable();
-            $table->string('url_manzil')->nullable();
             $table->timestamps();
         });
     }

@@ -32,19 +32,32 @@ class DataManager {
             console.log("Using Laravel students data:", window.mockStudents1);
             const laravelStudents = window.mockStudents1.map((student) => ({
                 id: student.id,
+                talaba_id: student.talaba_id,
                 fish: student.fish || "",
                 fakultet: student.fakultet || "",
                 guruh: student.guruh || "",
                 telefon: student.telefon || "",
                 tyutori: student.tyutori || "",
                 hudud: student.hudud || "",
-                manzil: student.manzil || "",
+                doimiy_yashash_viloyati: student.doimiy_yashash_viloyati || "",
+                doimiy_yashash_tumani: student.doimiy_yashash_tumani || "",
+                doimiy_yashash_manzili: student.doimiy_yashash_manzili || "",
+                doimiy_yashash_manzili_urli:
+                    student.doimiy_yashash_manzili_urli || "",
+                vaqtincha_yashash_viloyati:
+                    student.vaqtincha_yashash_viloyati || "",
+                vaqtincha_yashash_tumani:
+                    student.vaqtincha_yashash_tumani || "",
+                vaqtincha_yashash_manzili:
+                    student.vaqtincha_yashash_manzili || "",
+                vaqtincha_yashash_manzili_urli:
+                    student.vaqtincha_yashash_manzili_urli || "",
                 uy_egasi: student.uy_egasi || "",
                 uy_egasi_telefoni: student.uy_egasi_telefoni || "",
+                yotoqxona_nomeri: student.yotoqxona_nomeri || "",
                 narx: student.narx || "",
                 ota_ona: student.ota_ona || "",
                 ota_ona_telefoni: student.ota_ona_telefoni || "",
-                url_manzil: student.url_manzil || "",
                 created_at: student.created_at,
                 updated_at: student.updated_at,
             }));
@@ -59,15 +72,26 @@ class DataManager {
         const mockStudents = [
             {
                 id: 1,
+                talaba_id: "388232123456",
                 fish: "Aliyev Vali Akramovich",
                 fakultet: "Informatika",
                 guruh: "IT-21",
                 telefon: "+998901234567",
                 tyutori: "Prof. Karimov",
-                hudud: "Toshkent",
-                manzil: "Chilonzor tumani",
+                hudud: "yashil",
+                doimiy_yashash_viloyati: "Toshkent",
+                doimiy_yashash_tumani: "Chilonzor",
+                doimiy_yashash_manzili: "Chilonzor",
+                doimiy_yashash_manzili_urli:
+                    "https://maps.google.com/q=122.13133,45.23141",
+                vaqtincha_yashash_viloyati: "Samarqand",
+                vaqtincha_yashash_tumani: "Samarqand",
+                vaqtincha_yashash_manzili: "Beruniy k. 22-uy",
+                vaqtincha_yashash_manzili_urli:
+                    "https://maps.google.com/q=122.13133,45.23141",
                 uy_egasi: "Shodmonov Alisher",
                 uy_egasi_telefoni: "+998901234567",
+                yotoqxona_nomeri: "",
                 narx: "500 000",
                 ota_ona: "Ahmadov Dilshod, Ahmadova Madina",
                 ota_ona_telefoni: "+998901234567",
@@ -608,14 +632,27 @@ class UIManager {
         const sortDirection = this.dataManager.sortDirection.students;
 
         students.sort((a, b) => {
-            const aValue = a[sortField]?.toString() || "-";
-            const bValue = b[sortField]?.toString() || "-";
+            let aValue = a[sortField];
+            let bValue = b[sortField];
 
-            if (sortDirection === "asc") {
-                return aValue.localeCompare(bValue);
-            } else {
-                return bValue.localeCompare(aValue);
+            // Agar qiymatlar son bo‘lsa — raqam sifatida solishtiramiz
+            const isNumeric = !isNaN(parseFloat(aValue)) && isFinite(aValue);
+
+            if (isNumeric) {
+                aValue = parseFloat(aValue);
+                bValue = parseFloat(bValue);
+                return sortDirection === "asc"
+                    ? aValue - bValue
+                    : bValue - aValue;
             }
+
+            // Aks holda — matn sifatida solishtiramiz
+            aValue = String(aValue).toLowerCase();
+            bValue = String(bValue).toLowerCase();
+
+            return sortDirection === "asc"
+                ? aValue.localeCompare(bValue)
+                : bValue.localeCompare(aValue);
         });
 
         console.log("Students after filter and sort:", students);
@@ -633,6 +670,7 @@ class UIManager {
                     (student) => `
                 <tr>
                     <td>${student.id}</td>
+                    <td><strong>${student.talaba_id || "-"}</strong></td>
                     <td><strong>${student.fish || "-"}</strong></td>
                     <td><span class="badge badge-secondary">${
                         student.fakultet || "-"
@@ -641,12 +679,32 @@ class UIManager {
                     <td>${student.telefon || "-"}</td>
                     <td>${student.tyutori || "-"}</td>
                     <td>${student.hudud || "-"}</td>
+                    <td>${student.doimiy_yashash_viloyati || "-"}</td>
+                    <td>${student.doimiy_yashash_tumani || "-"}</td>
+                    <td>${student.doimiy_yashash_manzili || "-"}</td>
+                    <td><a href='${
+                        student.doimiy_yashash_manzili_urli || "#"
+                    }' target="_blank">${
+                        student.doimiy_yashash_manzili_urli
+                            ? "Xaritadan ko'rish"
+                            : "-"
+                    }</a></td>
+                    <td>${student.vaqtincha_yashash_viloyati || "-"}</td>
+                    <td>${student.vaqtincha_yashash_tumani || "-"}</td>
+                    <td>${student.vaqtincha_yashash_manzili || "-"}</td>
+                    <td><a href='${
+                        student.vaqtincha_yashash_manzili_urli || "#"
+                    }' target="_blank">${
+                        student.vaqtincha_yashash_manzili_urli
+                            ? "Xaritadan ko'rish"
+                            : "-"
+                    }</a></td>
                     <td>${student.uy_egasi || "-"}</td>
                     <td>${student.uy_egasi_telefoni || "-"}</td>
+                    <td>${student.yotoqxona_nomeri || "-"}</td>
                     <td>${student.narx || "-"}</td>
                     <td>${student.ota_ona || "-"}</td>
                     <td>${student.ota_ona_telefoni || "-"}</td>
-                    <td><a href='${student.url_manzil || '#'}' target="_blank">${student.url_manzil? "Xaritadan ko'rish" : "-"}</a></td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn-icon" onclick="ui.editStudent(${
@@ -671,6 +729,8 @@ class UIManager {
             `
                 )
                 .join("");
+
+            console.log("Jami talabalar -> ", students);
         }
 
         if (countElement) {
@@ -842,7 +902,7 @@ class UIManager {
         switch (role) {
             case "admin":
                 return "badge-destructive";
-            case "moderator":
+            case "mentor":
                 return "badge-default";
             default:
                 return "badge-secondary";
@@ -861,23 +921,46 @@ class UIManager {
 
         if (student) {
             title.textContent = "Talabani tahrirlash";
+            document.getElementById("talaba_id").value =
+                student.talaba_id || "-";
             document.getElementById("studentFish").value = student.fish || "-";
             document.getElementById("studentFakultet").value =
                 student.fakultet || "-";
-            document.getElementById("studentGuruh").value = student.guruh || "-";
+            document.getElementById("studentGuruh").value =
+                student.guruh || "-";
             document.getElementById("studentTelefon").value =
                 student.telefon || "-";
             document.getElementById("studentTyutori").value =
                 student.tyutori || "-";
-            document.getElementById("studentHudud").value = student.hudud || "-";
-            document.getElementById("studentManzil").value = student.manzil || "-";
-            document.getElementById("studentUyEgasi").value = student.uy_egasi || "-";
-            document.getElementById("studentUyEgasiTelefoni").value = student.uy_egasi_telefoni || "-";
+            document.getElementById("studentHudud").value =
+                student.hudud || "-";
+            document.getElementById("doimiy_yashash_viloyati").value =
+                student.doimiy_yashash_viloyati || "-";
+            document.getElementById("doimiy_yashash_tumani").value =
+                student.doimiy_yashash_tumani || "-";
+            document.getElementById("doimiy_yashash_manzili").value =
+                student.doimiy_yashash_manzili || "-";
+            document.getElementById("doimiy_yashash_manzili_urli").value =
+                student.doimiy_yashash_manzili_urli || "-";
+            document.getElementById("vaqtincha_yashash_viloyati").value =
+                student.vaqtincha_yashash_viloyati || "-";
+            document.getElementById("vaqtincha_yashash_tumani").value =
+                student.vaqtincha_yashash_tumani || "-";
+            document.getElementById("vaqtincha_yashash_manzili").value =
+                student.vaqtincha_yashash_manzili || "-";
+            document.getElementById("vaqtincha_yashash_manzili_urli").value =
+                student.vaqtincha_yashash_manzili_urli || "-";
+            document.getElementById("studentUyEgasi").value =
+                student.uy_egasi || "-";
+            document.getElementById("studentUyEgasiTelefoni").value =
+                student.uy_egasi_telefoni || "-";
+            document.getElementById("yotoqxona_nomeri").value =
+                student.yotoqxona_nomeri || "-";
             document.getElementById("studentNarxi").value = student.narx || "-";
-            document.getElementById("studentOtaOna").value = student.ota_ona || "-";
-            document.getElementById("studentOtaOnaTelefoni").value = student.ota_ona_telefoni || "-";
-            document.getElementById("studentUrlManzil").value =
-                student.url_manzil || "-";
+            document.getElementById("studentOtaOna").value =
+                student.ota_ona || "-";
+            document.getElementById("studentOtaOnaTelefoni").value =
+                student.ota_ona_telefoni || "-";
             document.getElementById("saveStudentBtn").textContent = "Saqlash";
         } else {
             title.textContent = "Yangi talaba qo'shish";
@@ -898,19 +981,43 @@ class UIManager {
 
     handleStudentSubmit() {
         const studentData = {
+            talaba_id: document.getElementById("talaba_id")?.value || "",
             fish: document.getElementById("studentFish")?.value || "",
             fakultet: document.getElementById("studentFakultet")?.value || "",
             guruh: document.getElementById("studentGuruh")?.value || "",
             telefon: document.getElementById("studentTelefon")?.value || "",
             tyutori: document.getElementById("studentTyutori")?.value || "",
             hudud: document.getElementById("studentHudud")?.value || "",
-            manzil: document.getElementById("studentManzil")?.value || "",
+            doimiy_yashash_viloyati:
+                document.getElementById("doimiy_yashash_viloyati")?.value || "",
+            doimiy_yashash_tumani:
+                document.getElementById("doimiy_yashash_tumani")?.value || "",
+            doimiy_yashash_manzili:
+                document.getElementById("doimiy_yashash_manzili")?.value || "",
+            doimiy_yashash_manzili_urli:
+                document.getElementById("doimiy_yashash_manzili_urli")?.value ||
+                "",
+            vaqtincha_yashash_viloyati:
+                document.getElementById("vaqtincha_yashash_viloyati")?.value ||
+                "",
+            vaqtincha_yashash_tumani:
+                document.getElementById("vaqtincha_yashash_tumani")?.value ||
+                "",
+            vaqtincha_yashash_manzili:
+                document.getElementById("vaqtincha_yashash_manzili")?.value ||
+                "",
+            vaqtincha_yashash_manzili_urli:
+                document.getElementById("vaqtincha_yashash_manzili_urli")
+                    ?.value || "",
             uy_egasi: document.getElementById("studentUyEgasi")?.value || "",
-            uy_egasi_telefoni: document.getElementById("studentUyEgasiTelefoni")?.value || "",
+            uy_egasi_telefoni:
+                document.getElementById("studentUyEgasiTelefoni")?.value || "",
+            yotoqxona_nomeri:
+                document.getElementById("yotoqxona_nomeri")?.value || "",
             narx: document.getElementById("studentNarxi")?.value || "",
             ota_ona: document.getElementById("studentOtaOna")?.value || "",
-            ota_ona_telefoni: document.getElementById("studentOtaOnaTelefoni")?.value || "",
-            url_manzil: document.getElementById("studentUrlManzil")?.value || "",
+            ota_ona_telefoni:
+                document.getElementById("studentOtaOnaTelefoni")?.value || "",
         };
 
         if (this.dataManager.currentStudentId) {
@@ -959,7 +1066,8 @@ class UIManager {
             document.getElementById("userEmail").value = user.email || "-";
             document.getElementById("userChatId").value = user.chat_id || "-";
             document.getElementById("userRole").value = user.role || "user";
-            document.getElementById("userPassword").value = user.password || "-";
+            document.getElementById("userPassword").value =
+                user.password || "-";
 
             // Laravel dan kelgan sana formatini to'g'rilash
             if (user.email_verified_at) {

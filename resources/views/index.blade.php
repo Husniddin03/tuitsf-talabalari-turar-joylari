@@ -170,19 +170,37 @@
                             <table class="data-table" id="studentsTable">
                                 <thead>
                                     <tr>
-                                        <th data-sort="id">ID <span class="sort-icon">↕</span></th>
+                                        <th data-sort="id">Id <span class="sort-icon">↕</span></th>
+                                        <th data-sort="talaba_id">Talaba Id <span class="sort-icon">↕</span></th>
                                         <th data-sort="fish">F.I.Sh <span class="sort-icon">↕</span></th>
                                         <th data-sort="fakultet">Fakultet <span class="sort-icon">↕</span></th>
                                         <th data-sort="guruh">Guruh <span class="sort-icon">↕</span></th>
                                         <th data-sort="telefon">Telefon <span class="sort-icon">↕</span></th>
                                         <th data-sort="tyutori">Tyutori <span class="sort-icon">↕</span></th>
                                         <th data-sort="hudud">Hudud <span class="sort-icon">↕</span></th>
+                                        <th data-sort="doimiy_yashash_viloyati">Doimiy yashash viloyati <span
+                                                class="sort-icon">↕</span></th>
+                                        <th data-sort="doimiy_yashash_tumani">Doimiy yashash tumani <span
+                                                class="sort-icon">↕</span></th>
+                                        <th data-sort="doimiy_yashash_manzili">Doimiy yashash manzili <span
+                                                class="sort-icon">↕</span></th>
+                                        <th>Doimiy yashash manzili urli</th>
+                                        <th data-sort="vaqtincha_yashash_viloyati">Vaqtincha yashash viloyati <span
+                                                class="sort-icon">↕</span></th>
+                                        <th data-sort="vaqtincha_yashash_tumani">Vaqtincha yashash tumani <span
+                                                class="sort-icon">↕</span></th>
+                                        <th data-sort="vaqtincha_yashash_manzili">Vaqtincha yashash manzili <span
+                                                class="sort-icon">↕</span></th>
+                                        <th>Vaqtincha yashash manzili urli</th>
                                         <th data-sort="uy_egasi">Uy egasi <span class="sort-icon">↕</span></th>
-                                        <th data-sort="uy_egasi_telefoni">Uy egasi telefoni <span class="sort-icon">↕</span></th>
+                                        <th data-sort="uy_egasi_telefoni">Uy egasi telefoni <span
+                                                class="sort-icon">↕</span></th>
+                                        <th data-sort="yotoqxona_nomeri">Yotoqxona nomeri <span
+                                                class="sort-icon">↕</span></th>
                                         <th data-sort="narx">Narxi <span class="sort-icon">↕</span></th>
                                         <th data-sort="ota_ona">Ota ona <span class="sort-icon">↕</span></th>
-                                        <th data-sort="ota_ona_telefoni">Ota ona telefoni <span class="sort-icon">↕</span></th>
-                                        <th data-sort="url_manzil">Url manzil <span class="sort-icon">↕</span></th>
+                                        <th data-sort="ota_ona_telefoni">Ota ona telefoni <span
+                                                class="sort-icon">↕</span></th>
                                         <th>Amallar</th>
                                     </tr>
                                 </thead>
@@ -254,16 +272,20 @@
             <form action="{{ route('web.store') }}" method="post" id="studentForm">
                 @csrf
                 <div class="form-group">
+                    <label for="talaba_id">Talaba id *</label>
+                    <input name="talaba_id" type="text" id="talaba_id">
+                </div>
+                <div class="form-group">
                     <label for="studentFish">F.I.Sh *</label>
-                    <input name="fish" type="text" id="studentFish" required>
+                    <input name="fish" type="text" id="studentFish">
                 </div>
                 <div class="form-group">
                     <label for="studentFakultet">Fakultet *</label>
-                    <input name="fakultet" type="text" id="studentFakultet" required>
+                    <input name="fakultet" type="text" id="studentFakultet">
                 </div>
                 <div class="form-group">
                     <label for="studentGuruh">Guruh *</label>
-                    <input name="guruh" type="text" id="studentGuruh" required>
+                    <input name="guruh" type="text" id="studentGuruh">
                 </div>
                 <div class="form-group">
                     <label for="studentTelefon">Telefon</label>
@@ -277,6 +299,75 @@
                     <label for="studentHudud">Hudud</label>
                     <input name="hudud" type="text" id="studentHudud">
                 </div>
+                <!-- Doimiy yashash xaritasi -->
+                <div id="mapPermanent" style="width: 100%; height: 400px; margin-top: 10px; border-radius:10px;">
+                </div>
+                <small>Xaritadan tanlasangiz quyidagi maydonlar avtomatik to‘ldiriladi</small>
+
+                <div class="edu-center-row">
+                    <div class="edu-center-field-group edu-center-half">
+                        <label for="doimiy_yashash_viloyati">Viloyat</label>
+                        <select id="doimiy_yashash_viloyati" name="doimiy_yashash_viloyati" class="edu-center-input">
+                            <option value="" disabled selected>Viloyatni tanlang...</option>
+                        </select>
+                    </div>
+                    <div class="edu-center-field-group edu-center-half">
+                        <label for="doimiy_yashash_tumani">Tuman</label>
+                        <select id="doimiy_yashash_tumani" name="doimiy_yashash_tumani" class="edu-center-input">
+                            <option value="" disabled selected>Tumanni tanlang...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="edu-center-field-group">
+                    <label for="doimiy_yashash_manzili">Manzil</label>
+                    <input type="text" name="doimiy_yashash_manzili" id="doimiy_yashash_manzili"
+                        placeholder="To'liq manzil">
+                </div>
+
+                <div class="edu-center-field-group">
+                    <label for="doimiy_yashash_manzili_urli">URL</label>
+                    <input type="url" name="doimiy_yashash_manzili_urli" id="doimiy_yashash_manzili_urli"
+                        placeholder="Manzil URL avtomatik yoziladi">
+                </div>
+
+                <hr style="margin:20px 0; border:1px solid #ddd;">
+                <h3>📍 Vaqtincha yashash joyi</h3>
+
+                <!-- Vaqtincha yashash xaritasi -->
+                <div id="mapTemporary" style="width: 100%; height: 400px; margin-top: 10px; border-radius:10px;">
+                </div>
+                <small>Xaritadan tanlasangiz quyidagi maydonlar avtomatik to‘ldiriladi</small>
+
+                <div class="edu-center-row">
+                    <div class="edu-center-field-group edu-center-half">
+                        <label for="vaqtincha_yashash_viloyati">Viloyat</label>
+                        <select id="vaqtincha_yashash_viloyati" name="vaqtincha_yashash_viloyati"
+                            class="edu-center-input">
+                            <option value="" disabled selected>Viloyatni tanlang...</option>
+                        </select>
+                    </div>
+                    <div class="edu-center-field-group edu-center-half">
+                        <label for="vaqtincha_yashash_tumani">Tuman</label>
+                        <select id="vaqtincha_yashash_tumani" name="vaqtincha_yashash_tumani"
+                            class="edu-center-input">
+                            <option value="" disabled selected>Tumanni tanlang...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="edu-center-field-group">
+                    <label for="vaqtincha_yashash_manzili">Manzil</label>
+                    <input type="text" name="vaqtincha_yashash_manzili" id="vaqtincha_yashash_manzili"
+                        placeholder="To'liq manzil">
+                </div>
+
+                <div class="edu-center-field-group">
+                    <label for="vaqtincha_yashash_manzili_urli">URL</label>
+                    <input type="url" name="vaqtincha_yashash_manzili_urli" id="vaqtincha_yashash_manzili_urli"
+                        placeholder="Manzil URL avtomatik yoziladi">
+                </div>
+
                 <div class="form-group">
                     <label for="studentUyEgasi">Uy egasi</label>
                     <input name="uy_egasi" type="text" id="studentUyEgasi">
@@ -284,6 +375,10 @@
                 <div class="form-group">
                     <label for="studentUyEgasiTelefoni">Uy egasi telefoni</label>
                     <input name="uy_egasi_telefoni" type="text" id="studentUyEgasiTelefoni">
+                </div>
+                <div class="form-group">
+                    <label for="yotoqxona_nomeri">Yotoqxona raqami</label>
+                    <input name="yotoqxona_nomeri" type="text" id="yotoqxona_nomeri">
                 </div>
                 <div class="form-group">
                     <label for="studentNarxi">Narxi</label>
@@ -297,20 +392,12 @@
                     <label for="studentOtaOnaTelefoni">Ota - Oan telefoni</label>
                     <input name="ota_ona_telefoni" type="text" id="studentOtaOnaTelefoni">
                 </div>
-                <div class="form-group">
-                    <label for="studentManzil">Manzil</label>
-                    <input name="'manzil" type="text" id="studentManzil">
-                </div>
-                <div class="form-group">
-                    <label for="studentUrlManzil">Manzil URL</label>
-                    <input name="url_manzil" type="url" id="studentUrlManzil"
-                        placeholder="https://maps.google.com/...">
-                </div>
                 <div class="form-actions">
                     <button type="submit" class="btn-primary" id="saveStudentBtn">Saqlash</button>
                     <button type="button" class="btn-secondary" id="cancelStudentBtn">Bekor qilish</button>
                 </div>
             </form>
+
         </div>
     </div>
 
@@ -324,26 +411,26 @@
             <form method="post" action="{{ route('admin.store') }}" id="userForm">
                 <div class="form-group">
                     <label for="userName">Ism *</label>
-                    <input name="name" type="text" id="userName" required>
+                    <input name="name" type="text" id="userName">
                 </div>
                 <div class="form-group">
                     <label for="userEmail">Email *</label>
-                    <input name="email" type="email" id="userEmail" required>
+                    <input name="email" type="email" id="userEmail">
                 </div>
                 <div class="form-group">
                     <label for="userChatId">Chat ID *</label>
-                    <input name="chat_id" type="number" id="userChatId" required>
+                    <input name="chat_id" type="number" id="userChatId">
                 </div>
                 <div class="form-group">
                     <label for="userRole">Rol *</label>
-                    <select name="role" id="userRole" required>
+                    <select name="role" id="userRole">
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="userPassword">Parol *</label>
-                    <input name="password" type="password" id="userPassword" required>
+                    <input name="password" type="password" id="userPassword">
                 </div>
                 <div class="form-group">
                     <label for="userEmailVerified">Email tasdiqlangan vaqt</label>
@@ -366,3 +453,193 @@
 </body>
 
 </html>
+
+<script>
+    const districtsByRegion = {
+        Toshkent: ["Bekobod", "Bo‘ka", "Chinoz", "Oqqo‘rg‘on", "Ohangaron", "Piskent", "Quyichirchiq",
+            "Yuqorichirchiq", "Zangiota", "Toshkent tumani", "Parkent"
+        ],
+        Sirdaryo: ["Guliston", "Boyovut", "Sardoba", "Mirzaobod", "Hovos", "Oqoltin", "Sayxunobod",
+            "Sirdaryo tumani"
+        ],
+        Jizzax: ["Jizzax shahri", "Arnasoy", "Baxmal", "Do‘stlik", "Forish", "G‘allaorol", "Sharof Rashidov",
+            "Paxtakor", "Zomin", "Yangiobod", "Mirzacho‘l", "Gagarin"
+        ],
+        Samarqand: ["Samarqand shahri", "Bulung‘ur", "Jomboy", "Ishtixon", "Kattaqo‘rg‘on", "Narpay", "Oqdaryo",
+            "Pastdarg‘om", "Payariq", "Qo‘shrabot", "Samarqand tumani", "Tayloq", "Urgut", "Chelak", "Ziyodin",
+            "Kattaqo‘rg‘on shahri"
+        ],
+        Buxoro: ["Buxoro shahri", "Buxoro tumani", "G‘ijduvon", "Jondor", "Kogon shahri", "Kogon tumani", "Olot",
+            "Peshku", "Qorako‘l", "Qorovulbozor", "Shofirkon"
+        ],
+        Navoiy: ["Navoiy shahri", "Zarafshon shahri", "Karmana", "Xatirchi", "Qiziltepa", "Navbahor", "Tomdi",
+            "Uchquduq"
+        ],
+        Qashqadaryo: ["Qarshi shahri", "Qarshi tumani", "Shahrisabz shahri", "Shahrisabz tumani", "Kitob",
+            "Yakkabog‘", "Chiroqchi", "Nishon", "Muborak", "Qamashi", "Koson", "Kasbi", "G‘uzor", "Mirishkor"
+        ],
+        Surxandaryo: ["Termiz shahri", "Angor", "Boysun", "Denov", "Jarqo‘rg‘on", "Muzrabot", "Oltinsoy", "Qiziriq",
+            "Qumqo‘rg‘on", "Sariosiyo", "Sherobod", "Sho‘rchi", "Termiz tumani", "Uzun"
+        ],
+        Xorazm: ["Urganch shahri", "Bog‘ot", "Gurlan", "Hazorasp", "Xiva", "Qo‘shko‘pir", "Shovot", "Tuproqqal’a",
+            "Urganch tumani", "Xonqa", "Yangibozor"
+        ],
+        Andijon: ["Andijon shahri", "Andijon tumani", "Asaka", "Baliqchi", "Bo‘z", "Buloqboshi", "Izboskan",
+            "Jalolquduq", "Xo‘jaobod", "Qo‘rg‘ontepa", "Marhamat", "Oltinko‘l", "Paxtaobod", "Shahrixon",
+            "Ulug‘nor", "Xonobod shahri"
+        ],
+        Namangan: ["Namangan shahri", "Chortoq", "Chust", "Kosonsoy", "Mingbuloq", "Norin", "Pop", "To‘raqo‘rg‘on",
+            "Uychi", "Yangiqo‘rg‘on", "Namangan tumani"
+        ],
+        "Farg‘ona": ["Farg‘ona shahri", "Qo‘qon shahri", "Marg‘ilon shahri", "Oltiariq", "O‘zbekiston tumani",
+            "Quva", "Rishton", "Toshloq", "Yozyovon", "Dang‘ara", "Beshariq", "Bog‘dod", "So‘x", "Uchko‘prik",
+            "Furqat"
+        ],
+        "Qoraqalpog‘iston": ["Nukus shahri", "Amudaryo", "Beruniy", "Chimboy", "Ellikqal‘a", "Kegeyli", "Mo‘ynoq",
+            "Nukus tumani", "Qanliko‘l", "Qo‘ng‘irot", "Qorao‘zak", "Shumanay", "Taxtako‘pir", "To‘rtko‘l",
+            "Xo‘jayli", "Taxiatosh shahri"
+        ]
+    };
+
+    function fillRegions(regionSelectId, districtSelectId) {
+        const regionSelect = document.getElementById(regionSelectId);
+        const districtSelect = document.getElementById(districtSelectId);
+
+        for (let region in districtsByRegion) {
+            const option = document.createElement("option");
+            option.value = region;
+            option.textContent = region;
+            regionSelect.appendChild(option);
+        }
+
+        regionSelect.addEventListener("change", () => {
+            districtSelect.innerHTML = '<option value="" disabled selected>Tumanni tanlang...</option>';
+            if (districtsByRegion[regionSelect.value]) {
+                districtsByRegion[regionSelect.value].forEach(d => {
+                    const opt = document.createElement("option");
+                    opt.value = d;
+                    opt.textContent = d;
+                    districtSelect.appendChild(opt);
+                });
+            }
+        });
+    }
+
+    fillRegions("doimiy_yashash_viloyati", "doimiy_yashash_tumani");
+    fillRegions("vaqtincha_yashash_viloyati", "vaqtincha_yashash_tumani");
+
+    let geocoder;
+
+    function initMap() {
+        geocoder = new google.maps.Geocoder();
+
+        createMap("mapPermanent", {
+            region: "doimiy_yashash_viloyati",
+            district: "doimiy_yashash_tumani",
+            address: "doimiy_yashash_manzili",
+            url: "doimiy_yashash_manzili_urli"
+        });
+
+        createMap("mapTemporary", {
+            region: "vaqtincha_yashash_viloyati",
+            district: "vaqtincha_yashash_tumani",
+            address: "vaqtincha_yashash_manzili",
+            url: "vaqtincha_yashash_manzili_urli"
+        });
+    }
+
+    function createMap(mapId, fields) {
+        const defaultCenter = {
+            lat: 41.3111,
+            lng: 69.2797
+        };
+
+        const map = new google.maps.Map(document.getElementById(mapId), {
+            center: defaultCenter,
+            zoom: 12,
+        });
+
+        const marker = new google.maps.Marker({
+            map: map,
+            position: defaultCenter,
+            draggable: true,
+        });
+
+        // Bosilganda
+        map.addListener("click", (event) => {
+            const lat = event.latLng.lat();
+            const lng = event.latLng.lng();
+            marker.setPosition({
+                lat,
+                lng
+            });
+            updateAddress(lat, lng, fields);
+        });
+
+        // Marker siljitilganda
+        marker.addListener("dragend", (event) => {
+            const lat = event.latLng.lat();
+            const lng = event.latLng.lng();
+            updateAddress(lat, lng, fields);
+        });
+    }
+
+    function updateAddress(lat, lng, fields) {
+        const addressField = document.getElementById(fields.address);
+        const urlField = document.getElementById(fields.url);
+        const regionField = document.getElementById(fields.region);
+        const districtField = document.getElementById(fields.district);
+
+        urlField.value = `https://www.google.com/maps?q=${lat},${lng}&hl=uz&z=14`;
+        geocoder.geocode({
+            location: {
+                lat,
+                lng
+            }
+        }, (results, status) => {
+            if (status === "OK" && results[0]) {
+                const address = results[0].formatted_address;
+                addressField.value = address;
+
+                // Viloyat va tuman ajratish
+                const components = results[0].address_components;
+                let regionName = "",
+                    districtName = "";
+
+                for (let c of components) {
+                    if (c.types.includes("administrative_area_level_1")) {
+                        regionName = c.long_name;
+                    }
+                    if (c.types.includes("administrative_area_level_2")) {
+                        districtName = c.long_name;
+                    }
+                }
+
+                // Mos keladigan viloyat va tumanlarni topish
+                for (let region in districtsByRegion) {
+                    if (address.includes(region)) {
+                        regionField.value = region;
+                        districtField.innerHTML = "";
+                        districtsByRegion[region].forEach(d => {
+                            const opt = document.createElement("option");
+                            opt.value = d;
+                            opt.textContent = d;
+                            districtField.appendChild(opt);
+                        });
+                        const foundDistrict = districtsByRegion[region].find(d => address.includes(d));
+                        if (foundDistrict) districtField.value = foundDistrict;
+                    }
+                }
+            } else {
+                addressField.value = "";
+                urlField.value = "";
+            }
+        });
+    }
+
+    window.initMap = initMap;
+</script>
+
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAM-lcwS2aMgdJd5AMxE8N_1Lu7M3aHJUw&callback=initMap" async
+    defer></script>
