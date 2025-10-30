@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call(StudentsSeeder::class);
+        $this->call(StudentsSeeder::class);
 
         User::factory()->create([
             'name' => 'tuit_admin',

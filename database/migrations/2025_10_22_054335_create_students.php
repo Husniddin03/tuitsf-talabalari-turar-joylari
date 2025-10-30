@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('talaba_id')->unique();
+            $table->bigInteger('talaba_id')->unique();
             $table->string('fish')->nullable();
             $table->string('fakultet')->nullable();
             $table->string('guruh')->nullable();
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('uy_egasi')->nullable();
             $table->string('uy_egasi_telefoni')->nullable();
             $table->string('yotoqxona_nomeri')->nullable();
-            $table->string('narx')->nullable();
+            $table->integer('narx')->nullable();
             $table->string('ota_ona')->nullable();
             $table->string('ota_ona_telefoni')->nullable();
             $table->timestamps();

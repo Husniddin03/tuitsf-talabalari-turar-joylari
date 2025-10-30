@@ -21,20 +21,23 @@
                     </svg>
                     <h1>Admin Panel</h1>
                 </div>
-                <button class="settings-btn" id="downloadExcel">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3" />
-                        <path d="M12 1v6m0 6v6" />
-                        <path d="M1 12h6m6 0h6" />
-                    </svg>
-                    Yuklash
-                </button>
+                <div class="header-actions">
+                    <span class="user-role" id="currentUserRole">{{ Auth::user()->role ?? 'user' }}</span>
+                    <button class="settings-btn" id="downloadExcel">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M12 1v6m0 6v6" />
+                            <path d="M1 12h6m6 0h6" />
+                        </svg>
+                        Yuklash
+                    </button>
+                </div>
                 <script>
                     document.getElementById('downloadExcel').addEventListener('click', function() {
                         const table = document.getElementById('studentsTable');
                         const rows = Array.from(table.querySelectorAll('tr'));
 
-                        // Jadvaldagi har bir katakni CSV formatga o‘tkazamiz
+                        // Jadvaldagi har bir katakni CSV formatga o'tkazamiz
                         const csvContent = rows.map(row => {
                             const cols = Array.from(row.querySelectorAll('th, td'));
                             return cols.map(col => `"${col.innerText.replace(/"/g, '""')}"`).join(',');
@@ -117,14 +120,14 @@
             <!-- Tabs -->
             <div class="tabs">
                 <div class="tab-buttons">
-                    <button class="tab-btn active" data-tab="students">
+                    <button class="tab-btn active" data-tab="students" id="studentsTab">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                             <path d="M6 12v5c3 3 9 3 12 0v-5" />
                         </svg>
                         Talabalar
                     </button>
-                    <button class="tab-btn" data-tab="users">
+                    <button class="tab-btn" data-tab="users" id="usersTab">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                             <circle cx="9" cy="7" r="4" />
@@ -164,7 +167,11 @@
                                 <circle cx="11" cy="11" r="8" />
                                 <path d="M21 21l-4.35-4.35" />
                             </svg>
-                            <input type="text" id="studentSearch" placeholder="Qidirish..." class="search-input">
+                            <input type="text" id="studentSearch"
+                                placeholder="Qidirish (ID, F.I.Sh, Fakultet, Guruh)..." class="search-input">
+                            <div class="search-loading" id="studentSearchLoading" style="display: none;">
+                                <div class="spinner"></div>
+                            </div>
                         </div>
                         <div class="table-container">
                             <table class="data-table" id="studentsTable">
@@ -208,8 +215,27 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="table-footer">
-                            <span id="studentsCount">Jami: 0 ta talaba</span>
+                        <!-- Pagination -->
+                        <div class="pagination-container">
+                            <div class="pagination-info">
+                                <span id="studentsCount">Jami: 0 ta talaba</span>
+                                <span id="studentsPageInfo">Sahifa 1 / 1</span>
+                            </div>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn" id="studentsPrevBtn" disabled>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="15,18 9,12 15,6"></polyline>
+                                    </svg>
+                                    Oldingi
+                                </button>
+                                <div class="pagination-pages" id="studentsPagination"></div>
+                                <button class="pagination-btn" id="studentsNextBtn" disabled>
+                                    Keyingi
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9,18 15,12 9,6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,7 +259,11 @@
                                 <circle cx="11" cy="11" r="8" />
                                 <path d="M21 21l-4.35-4.35" />
                             </svg>
-                            <input type="text" id="userSearch" placeholder="Qidirish..." class="search-input">
+                            <input type="text" id="userSearch" placeholder="Qidirish (Ism, Email, Rol)..."
+                                class="search-input">
+                            <div class="search-loading" id="userSearchLoading" style="display: none;">
+                                <div class="spinner"></div>
+                            </div>
                         </div>
                         <div class="table-container" style="width: 100% !important; overflow-x: auto !important">
                             <table class="data-table" id="usersTable"
@@ -253,8 +283,27 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="table-footer">
-                            <span id="usersCount">Jami: 0 ta foydalanuvchi</span>
+                        <!-- Pagination -->
+                        <div class="pagination-container">
+                            <div class="pagination-info">
+                                <span id="usersCount">Jami: 0 ta foydalanuvchi</span>
+                                <span id="usersPageInfo">Sahifa 1 / 1</span>
+                            </div>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn" id="usersPrevBtn" disabled>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="15,18 9,12 15,6"></polyline>
+                                    </svg>
+                                    Oldingi
+                                </button>
+                                <div class="pagination-pages" id="usersPagination"></div>
+                                <button class="pagination-btn" id="usersNextBtn" disabled>
+                                    Keyingi
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9,18 15,12 9,6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -273,7 +322,7 @@
                 @csrf
                 <div class="form-group">
                     <label for="talaba_id">Talaba id *</label>
-                    <input name="talaba_id" type="text" id="talaba_id">
+                    <input name="talaba_id" type="number" id="talaba_id">
                 </div>
                 <div class="form-group">
                     <label for="studentFish">F.I.Sh *</label>
@@ -302,30 +351,28 @@
                 <!-- Doimiy yashash xaritasi -->
                 <div id="mapPermanent" style="width: 100%; height: 400px; margin-top: 10px; border-radius:10px;">
                 </div>
-                <small>Xaritadan tanlasangiz quyidagi maydonlar avtomatik to‘ldiriladi</small>
+                <small>Xaritadan tanlasangiz quyidagi maydonlar avtomatik to'ldiriladi</small>
 
-                <div class="edu-center-row">
-                    <div class="edu-center-field-group edu-center-half">
-                        <label for="doimiy_yashash_viloyati">Viloyat</label>
-                        <select id="doimiy_yashash_viloyati" name="doimiy_yashash_viloyati" class="edu-center-input">
-                            <option value="" disabled selected>Viloyatni tanlang...</option>
-                        </select>
-                    </div>
-                    <div class="edu-center-field-group edu-center-half">
-                        <label for="doimiy_yashash_tumani">Tuman</label>
-                        <select id="doimiy_yashash_tumani" name="doimiy_yashash_tumani" class="edu-center-input">
-                            <option value="" disabled selected>Tumanni tanlang...</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="doimiy_yashash_viloyati">Viloyat</label>
+                    <select id="doimiy_yashash_viloyati" name="doimiy_yashash_viloyati" class="edu-center-input">
+                        <option value="" disabled selected>Viloyatni tanlang...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="doimiy_yashash_tumani">Tuman</label>
+                    <select id="doimiy_yashash_tumani" name="doimiy_yashash_tumani" class="edu-center-input">
+                        <option value="" disabled selected>Tumanni tanlang...</option>
+                    </select>
                 </div>
 
-                <div class="edu-center-field-group">
+                <div class="form-group">
                     <label for="doimiy_yashash_manzili">Manzil</label>
                     <input type="text" name="doimiy_yashash_manzili" id="doimiy_yashash_manzili"
                         placeholder="To'liq manzil">
                 </div>
 
-                <div class="edu-center-field-group">
+                <div class="form-group">
                     <label for="doimiy_yashash_manzili_urli">URL</label>
                     <input type="url" name="doimiy_yashash_manzili_urli" id="doimiy_yashash_manzili_urli"
                         placeholder="Manzil URL avtomatik yoziladi">
@@ -334,55 +381,88 @@
                 <hr style="margin:20px 0; border:1px solid #ddd;">
                 <h3>📍 Vaqtincha yashash joyi</h3>
 
-                <!-- Vaqtincha yashash xaritasi -->
-                <div id="mapTemporary" style="width: 100%; height: 400px; margin-top: 10px; border-radius:10px;">
+                <div class="form-group"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin: 12px 0;
+                        padding: 10px 15px;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        background-color: #f9f9f9;
+                        font-family: 'Poppins', sans-serif;
+                        font-size: 18px;
+                        color: #333;
+                    ">
+                    <label for="dormity" style="cursor: pointer; flex: 1;">Yotoqxona</label>
+                    <input type="checkbox" name="dormity" id="dormity"
+                        style="
+                            width: 22px;
+                            height: 22px;
+                            cursor: pointer;
+                            accent-color: #4a90e2;
+                        ">
                 </div>
-                <small>Xaritadan tanlasangiz quyidagi maydonlar avtomatik to‘ldiriladi</small>
 
-                <div class="edu-center-row">
-                    <div class="edu-center-field-group edu-center-half">
+
+
+                <!-- Vaqtincha yashash xaritasi -->
+                <div id="ijara">
+                    <div id="mapTemporary" style="width: 100%; height: 400px; margin-top: 10px; border-radius:10px;">
+                    </div>
+                    <small>Xaritadan tanlasangiz quyidagi maydonlar avtomatik to'ldiriladi</small>
+
+                    <div class="form-group">
                         <label for="vaqtincha_yashash_viloyati">Viloyat</label>
                         <select id="vaqtincha_yashash_viloyati" name="vaqtincha_yashash_viloyati"
                             class="edu-center-input">
                             <option value="" disabled selected>Viloyatni tanlang...</option>
                         </select>
                     </div>
-                    <div class="edu-center-field-group edu-center-half">
+                    <div class="form-group">
                         <label for="vaqtincha_yashash_tumani">Tuman</label>
                         <select id="vaqtincha_yashash_tumani" name="vaqtincha_yashash_tumani"
                             class="edu-center-input">
                             <option value="" disabled selected>Tumanni tanlang...</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label for="vaqtincha_yashash_manzili">Manzil</label>
+                        <input type="text" name="vaqtincha_yashash_manzili" id="vaqtincha_yashash_manzili"
+                            placeholder="To'liq manzil">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vaqtincha_yashash_manzili_urli">URL</label>
+                        <input type="url" name="vaqtincha_yashash_manzili_urli"
+                            id="vaqtincha_yashash_manzili_urli" placeholder="Manzil URL avtomatik yoziladi">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentUyEgasi">Uy egasi</label>
+                        <input name="uy_egasi" type="text" id="studentUyEgasi">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentUyEgasiTelefoni">Uy egasi telefoni</label>
+                        <input name="uy_egasi_telefoni" type="text" id="studentUyEgasiTelefoni">
+                    </div>
                 </div>
 
-                <div class="edu-center-field-group">
-                    <label for="vaqtincha_yashash_manzili">Manzil</label>
-                    <input type="text" name="vaqtincha_yashash_manzili" id="vaqtincha_yashash_manzili"
-                        placeholder="To'liq manzil">
-                </div>
-
-                <div class="edu-center-field-group">
-                    <label for="vaqtincha_yashash_manzili_urli">URL</label>
-                    <input type="url" name="vaqtincha_yashash_manzili_urli" id="vaqtincha_yashash_manzili_urli"
-                        placeholder="Manzil URL avtomatik yoziladi">
-                </div>
-
-                <div class="form-group">
-                    <label for="studentUyEgasi">Uy egasi</label>
-                    <input name="uy_egasi" type="text" id="studentUyEgasi">
-                </div>
-                <div class="form-group">
-                    <label for="studentUyEgasiTelefoni">Uy egasi telefoni</label>
-                    <input name="uy_egasi_telefoni" type="text" id="studentUyEgasiTelefoni">
-                </div>
-                <div class="form-group">
+                <div id="yotoqxona" class="form-group">
                     <label for="yotoqxona_nomeri">Yotoqxona raqami</label>
-                    <input name="yotoqxona_nomeri" type="text" id="yotoqxona_nomeri">
+                    <select id="yotoqxona_nomeri" name="yotoqxona_nomeri" class="edu-center-input">
+                        <option value="" disabled selected>Tumanni tanlang...</option>
+                        <option value="1-sonli">1-sonli</option>
+                        <option value="2-sonli">2-sonli</option>
+                        <option value="3-sonli">3-sonli</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
                     <label for="studentNarxi">Narxi</label>
-                    <input name="narx" type="text" id="studentNarxi">
+                    <input name="narx" type="number" id="studentNarxi">
                 </div>
                 <div class="form-group">
                     <label for="studentOtaOna">Ota - Oan</label>
@@ -426,6 +506,7 @@
                     <select name="role" id="userRole">
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
+                        <option value="super_admin">Super Admin</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -448,6 +529,7 @@
         // Laravel ma'lumotlarini global scope ga qo'yamiz
         window.mockStudents1 = @json($students);
         window.mockUsers1 = @json($users);
+        window.currentUserRole = '{{ Auth::user()->role ?? 'user' }}';
     </script>
     <script src="{{ asset('js/script.js') }}"></script>
 </body>
@@ -456,48 +538,48 @@
 
 <script>
     const districtsByRegion = {
-        Toshkent: ["Bekobod", "Bo‘ka", "Chinoz", "Oqqo‘rg‘on", "Ohangaron", "Piskent", "Quyichirchiq",
+        Toshkent: ["Bekobod", "Bo'ka", "Chinoz", "Oqqo'rg'on", "Ohangaron", "Piskent", "Quyichirchiq",
             "Yuqorichirchiq", "Zangiota", "Toshkent tumani", "Parkent"
         ],
         Sirdaryo: ["Guliston", "Boyovut", "Sardoba", "Mirzaobod", "Hovos", "Oqoltin", "Sayxunobod",
             "Sirdaryo tumani"
         ],
-        Jizzax: ["Jizzax shahri", "Arnasoy", "Baxmal", "Do‘stlik", "Forish", "G‘allaorol", "Sharof Rashidov",
-            "Paxtakor", "Zomin", "Yangiobod", "Mirzacho‘l", "Gagarin"
+        Jizzax: ["Jizzax shahri", "Arnasoy", "Baxmal", "Do'stlik", "Forish", "G'allaorol", "Sharof Rashidov",
+            "Paxtakor", "Zomin", "Yangiobod", "Mirzacho'l", "Gagarin"
         ],
-        Samarqand: ["Samarqand shahri", "Bulung‘ur", "Jomboy", "Ishtixon", "Kattaqo‘rg‘on", "Narpay", "Oqdaryo",
-            "Pastdarg‘om", "Payariq", "Qo‘shrabot", "Samarqand tumani", "Tayloq", "Urgut", "Chelak", "Ziyodin",
-            "Kattaqo‘rg‘on shahri"
+        Samarqand: ["Samarqand shahri", "Bulung'ur", "Jomboy", "Ishtixon", "Kattaqo'rg'on", "Narpay", "Oqdaryo",
+            "Pastdarg'om", "Payariq", "Qo'shrabot", "Samarqand tumani", "Tayloq", "Urgut", "Chelak", "Ziyodin",
+            "Kattaqo'rg'on shahri"
         ],
-        Buxoro: ["Buxoro shahri", "Buxoro tumani", "G‘ijduvon", "Jondor", "Kogon shahri", "Kogon tumani", "Olot",
-            "Peshku", "Qorako‘l", "Qorovulbozor", "Shofirkon"
+        Buxoro: ["Buxoro shahri", "Buxoro tumani", "G'ijduvon", "Jondor", "Kogon shahri", "Kogon tumani", "Olot",
+            "Peshku", "Qorako'l", "Qorovulbozor", "Shofirkon"
         ],
         Navoiy: ["Navoiy shahri", "Zarafshon shahri", "Karmana", "Xatirchi", "Qiziltepa", "Navbahor", "Tomdi",
             "Uchquduq"
         ],
         Qashqadaryo: ["Qarshi shahri", "Qarshi tumani", "Shahrisabz shahri", "Shahrisabz tumani", "Kitob",
-            "Yakkabog‘", "Chiroqchi", "Nishon", "Muborak", "Qamashi", "Koson", "Kasbi", "G‘uzor", "Mirishkor"
+            "Yakkabog'", "Chiroqchi", "Nishon", "Muborak", "Qamashi", "Koson", "Kasbi", "G'uzor", "Mirishkor"
         ],
-        Surxandaryo: ["Termiz shahri", "Angor", "Boysun", "Denov", "Jarqo‘rg‘on", "Muzrabot", "Oltinsoy", "Qiziriq",
-            "Qumqo‘rg‘on", "Sariosiyo", "Sherobod", "Sho‘rchi", "Termiz tumani", "Uzun"
+        Surxandaryo: ["Termiz shahri", "Angor", "Boysun", "Denov", "Jarqo'rg'on", "Muzrabot", "Oltinsoy", "Qiziriq",
+            "Qumqo'rg'on", "Sariosiyo", "Sherobod", "Sho'rchi", "Termiz tumani", "Uzun"
         ],
-        Xorazm: ["Urganch shahri", "Bog‘ot", "Gurlan", "Hazorasp", "Xiva", "Qo‘shko‘pir", "Shovot", "Tuproqqal’a",
+        Xorazm: ["Urganch shahri", "Bog'ot", "Gurlan", "Hazorasp", "Xiva", "Qo'shko'pir", "Shovot", "Tuproqqal'a",
             "Urganch tumani", "Xonqa", "Yangibozor"
         ],
-        Andijon: ["Andijon shahri", "Andijon tumani", "Asaka", "Baliqchi", "Bo‘z", "Buloqboshi", "Izboskan",
-            "Jalolquduq", "Xo‘jaobod", "Qo‘rg‘ontepa", "Marhamat", "Oltinko‘l", "Paxtaobod", "Shahrixon",
-            "Ulug‘nor", "Xonobod shahri"
+        Andijon: ["Andijon shahri", "Andijon tumani", "Asaka", "Baliqchi", "Bo'z", "Buloqboshi", "Izboskan",
+            "Jalolquduq", "Xo'jaobod", "Qo'rg'ontepa", "Marhamat", "Oltinko'l", "Paxtaobod", "Shahrixon",
+            "Ulug'nor", "Xonobod shahri"
         ],
-        Namangan: ["Namangan shahri", "Chortoq", "Chust", "Kosonsoy", "Mingbuloq", "Norin", "Pop", "To‘raqo‘rg‘on",
-            "Uychi", "Yangiqo‘rg‘on", "Namangan tumani"
+        Namangan: ["Namangan shahri", "Chortoq", "Chust", "Kosonsoy", "Mingbuloq", "Norin", "Pop", "To'raqo'rg'on",
+            "Uychi", "Yangiqo'rg'on", "Namangan tumani"
         ],
-        "Farg‘ona": ["Farg‘ona shahri", "Qo‘qon shahri", "Marg‘ilon shahri", "Oltiariq", "O‘zbekiston tumani",
-            "Quva", "Rishton", "Toshloq", "Yozyovon", "Dang‘ara", "Beshariq", "Bog‘dod", "So‘x", "Uchko‘prik",
+        "Farg'ona": ["Farg'ona shahri", "Qo'qon shahri", "Marg'ilon shahri", "Oltiariq", "O'zbekiston tumani",
+            "Quva", "Rishton", "Toshloq", "Yozyovon", "Dang'ara", "Beshariq", "Bog'dod", "So'x", "Uchko'prik",
             "Furqat"
         ],
-        "Qoraqalpog‘iston": ["Nukus shahri", "Amudaryo", "Beruniy", "Chimboy", "Ellikqal‘a", "Kegeyli", "Mo‘ynoq",
-            "Nukus tumani", "Qanliko‘l", "Qo‘ng‘irot", "Qorao‘zak", "Shumanay", "Taxtako‘pir", "To‘rtko‘l",
-            "Xo‘jayli", "Taxiatosh shahri"
+        "Qoraqalpog'iston": ["Nukus shahri", "Amudaryo", "Beruniy", "Chimboy", "Ellikqal'a", "Kegeyli", "Mo'ynoq",
+            "Nukus tumani", "Qanliko'l", "Qo'ng'irot", "Qorao'zak", "Shumanay", "Taxtako'pir", "To'rtko'l",
+            "Xo'jayli", "Taxiatosh shahri"
         ]
     };
 
@@ -643,3 +725,39 @@
 <!-- Google Maps API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAM-lcwS2aMgdJd5AMxE8N_1Lu7M3aHJUw&callback=initMap" async
     defer></script>
+
+
+<script>
+    const dormity = document.getElementById('dormity');
+    const yotoqxona = document.getElementById('yotoqxona');
+    const ijara = document.getElementById('ijara');
+
+    // Funksiya: berilgan element ichidagi input/selectlarni tozalaydi
+    function clearInputs(container) {
+        const inputs = container.querySelectorAll('input, select, textarea');
+        inputs.forEach(el => {
+            if (el.type === 'checkbox' || el.type === 'radio') {
+                el.checked = false; // belgilarni olib tashlaydi
+            } else {
+                el.value = ''; // matn, raqam, select va boshqalarni tozalaydi
+            }
+        });
+    }
+
+    // Checkbox bosilganda ishlaydigan funksiya
+    dormity.addEventListener('change', function() {
+        if (this.checked) {
+            // yotoqxona ko'rsatilsin, ijara yashirilsin
+            ijara.style.display = 'none';
+            yotoqxona.style.display = 'block';
+            clearInputs(ijara); // yashirilayotgan bo'limdagi qiymatlarni tozalaydi
+            console.log('check');
+        } else {
+            // ijara ko'rsatilsin, yotoqxona yashirilsin
+            yotoqxona.style.display = 'none';
+            ijara.style.display = 'block';
+            clearInputs(yotoqxona); // yashirilayotgan bo'limdagi qiymatlarni tozalaydi
+            console.log('nocheck');
+        }
+    });
+</script>

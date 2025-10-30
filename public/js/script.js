@@ -1,3 +1,230 @@
+// Role-based permissions
+class PermissionManager {
+    constructor() {
+        this.currentUserRole = window.currentUserRole || "user";
+        this.permissions = {
+            user: {
+                students: {
+                    view: false,
+                    create: false,
+                    edit: false,
+                    delete: false,
+                },
+                users: {
+                    view: false,
+                    create: false,
+                    edit: false,
+                    delete: false,
+                },
+                ownProfile: { view: true, edit: true },
+            },
+            admin: {
+                students: {
+                    view: true,
+                    create: true,
+                    edit: true,
+                    delete: true,
+                },
+                users: {
+                    view: false,
+                    create: false,
+                    edit: false,
+                    delete: false,
+                },
+                ownProfile: { view: true, edit: true },
+            },
+            super_admin: {
+                students: {
+                    view: true,
+                    create: true,
+                    edit: true,
+                    delete: true,
+                },
+                users: { view: true, create: true, edit: true, delete: true },
+                ownProfile: { view: true, edit: true },
+            },
+        };
+    }
+
+    canAccess(resource, action) {
+        const rolePermissions = this.permissions[this.currentUserRole];
+        if (!rolePermissions || !rolePermissions[resource]) {
+            return false;
+        }
+        return rolePermissions[resource][action] || false;
+    }
+
+    filterUsersByRole(users) {
+        if (this.currentUserRole === "super_admin") {
+            return users; // Super admin can see all users
+        }
+        if (this.currentUserRole === "admin") {
+            return users.filter(
+                (user) => user.role !== "admin" && user.role !== "super_admin"
+            );
+        }
+        return []; // Regular users can't see other users
+    }
+}
+
+// Enhanced search with debouncing
+class SearchManager {
+    constructor() {
+        this.searchTimeouts = {};
+        this.searchDelay = 500; // 0.5 seconds
+    }
+
+    debounceSearch(searchId, callback, query) {
+        // Clear existing timeout
+        if (this.searchTimeouts[searchId]) {
+            clearTimeout(this.searchTimeouts[searchId]);
+        }
+
+        // Show loading indicator
+        const loadingEl = document.getElementById(`${searchId}Loading`);
+        if (loadingEl) {
+            loadingEl.style.display = "block";
+        }
+
+        // Set new timeout
+        this.searchTimeouts[searchId] = setTimeout(() => {
+            callback(query);
+            // Hide loading indicator
+            if (loadingEl) {
+                loadingEl.style.display = "none";
+            }
+        }, this.searchDelay);
+    }
+
+    // Optimized search - only search in key fields
+    searchStudents(students, query) {
+        if (!query.trim()) return students;
+
+        const searchTerm = query.toLowerCase().trim();
+        const searchFields = ["id", "talaba_id", "fish", "fakultet", "guruh"]; // Limited fields for faster search
+
+        return students.filter((student) => {
+            return searchFields.some((field) => {
+                const value = student[field];
+                return (
+                    value && value.toString().toLowerCase().includes(searchTerm)
+                );
+            });
+        });
+    }
+
+    searchUsers(users, query) {
+        if (!query.trim()) return users;
+
+        const searchTerm = query.toLowerCase().trim();
+        const searchFields = ["id", "name", "email", "role"]; // Limited fields for faster search
+
+        return users.filter((user) => {
+            return searchFields.some((field) => {
+                const value = user[field];
+                return (
+                    value && value.toString().toLowerCase().includes(searchTerm)
+                );
+            });
+        });
+    }
+}
+
+// Pagination manager
+class PaginationManager {
+    constructor() {
+        this.itemsPerPage = 50;
+        this.currentPages = {
+            students: 1,
+            users: 1,
+        };
+    }
+
+    paginate(items, page) {
+        const startIndex = (page - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        return items.slice(startIndex, endIndex);
+    }
+
+    getTotalPages(totalItems) {
+        return Math.ceil(totalItems / this.itemsPerPage);
+    }
+
+    setCurrentPage(type, page) {
+        this.currentPages[type] = page;
+    }
+
+    getCurrentPage(type) {
+        return this.currentPages[type];
+    }
+
+    renderPagination(type, totalItems, onPageChange) {
+        const totalPages = this.getTotalPages(totalItems);
+        const currentPage = this.getCurrentPage(type);
+
+        // Update page info
+        const pageInfoEl = document.getElementById(`${type}PageInfo`);
+        if (pageInfoEl) {
+            pageInfoEl.textContent = `Sahifa ${currentPage} / ${totalPages}`;
+        }
+
+        // Update navigation buttons
+        const prevBtn = document.getElementById(`${type}PrevBtn`);
+        const nextBtn = document.getElementById(`${type}NextBtn`);
+
+        if (prevBtn) {
+            prevBtn.disabled = currentPage <= 1;
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    this.setCurrentPage(type, currentPage - 1);
+                    onPageChange();
+                }
+            };
+        }
+
+        if (nextBtn) {
+            nextBtn.disabled = currentPage >= totalPages;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    this.setCurrentPage(type, currentPage + 1);
+                    onPageChange();
+                }
+            };
+        }
+
+        // Render page numbers
+        const paginationEl = document.getElementById(`${type}Pagination`);
+        if (paginationEl) {
+            paginationEl.innerHTML = "";
+
+            const maxVisiblePages = 5;
+            let startPage = Math.max(
+                1,
+                currentPage - Math.floor(maxVisiblePages / 2)
+            );
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            // Adjust start page if we're near the end
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement("button");
+                pageBtn.className = `pagination-page ${
+                    i === currentPage ? "active" : ""
+                }`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    this.setCurrentPage(type, i);
+                    onPageChange();
+                };
+                paginationEl.appendChild(pageBtn);
+            }
+        }
+    }
+}
+
 // Data management for Laravel integration
 class DataManager {
     constructor() {
@@ -8,20 +235,17 @@ class DataManager {
         this.currentUserId = null;
         this.sortField = { students: "id", users: "id" };
         this.sortDirection = { students: "asc", users: "asc" };
+
+        // Initialize managers
+        this.permissionManager = new PermissionManager();
+        this.searchManager = new SearchManager();
+        this.paginationManager = new PaginationManager();
     }
 
     // Laravel dan kelgan students ma'lumotlarini olish
     initializeStudents() {
         console.log("Initializing students...");
         console.log("window.mockStudents1:", window.mockStudents1);
-
-        // // Avval localStorage dan tekshiramiz
-        // const stored = localStorage.getItem('students');
-        // if (stored) {
-        //     const parsedStudents = JSON.parse(stored);
-        //     console.log('Students from localStorage:', parsedStudents);
-        //     return parsedStudents;
-        // }
 
         // Laravel dan kelgan ma'lumotlarni ishlatamiz
         if (
@@ -69,36 +293,7 @@ class DataManager {
 
         // Agar Laravel ma'lumotlari ham bo'lmasa, mock data ishlatamiz
         console.log("Using mock students data");
-        const mockStudents = [
-            {
-                id: 1,
-                talaba_id: "388232123456",
-                fish: "Aliyev Vali Akramovich",
-                fakultet: "Informatika",
-                guruh: "IT-21",
-                telefon: "+998901234567",
-                tyutori: "Prof. Karimov",
-                hudud: "yashil",
-                doimiy_yashash_viloyati: "Toshkent",
-                doimiy_yashash_tumani: "Chilonzor",
-                doimiy_yashash_manzili: "Chilonzor",
-                doimiy_yashash_manzili_urli:
-                    "https://maps.google.com/q=122.13133,45.23141",
-                vaqtincha_yashash_viloyati: "Samarqand",
-                vaqtincha_yashash_tumani: "Samarqand",
-                vaqtincha_yashash_manzili: "Beruniy k. 22-uy",
-                vaqtincha_yashash_manzili_urli:
-                    "https://maps.google.com/q=122.13133,45.23141",
-                uy_egasi: "Shodmonov Alisher",
-                uy_egasi_telefoni: "+998901234567",
-                yotoqxona_nomeri: "",
-                narx: "500 000",
-                ota_ona: "Ahmadov Dilshod, Ahmadova Madina",
-                ota_ona_telefoni: "+998901234567",
-                created_at: "2024-01-15T10:30:00Z",
-                updated_at: "2024-01-15T10:30:00Z",
-            },
-        ];
+        const mockStudents = [];
 
         this.saveStudents(mockStudents);
         return mockStudents;
@@ -108,14 +303,6 @@ class DataManager {
     initializeUsers() {
         console.log("Initializing users...");
         console.log("window.mockUsers1:", window.mockUsers1);
-
-        // Avval localStorage dan tekshiramiz
-        // const stored = localStorage.getItem('users');
-        // if (stored) {
-        //     const parsedUsers = JSON.parse(stored);
-        //     console.log('Users from localStorage:', parsedUsers);
-        //     return parsedUsers;
-        // }
 
         // Laravel dan kelgan ma'lumotlarni ishlatamiz
         if (
@@ -144,32 +331,7 @@ class DataManager {
 
         // Agar Laravel ma'lumotlari ham bo'lmasa, mock data ishlatamiz
         console.log("Using mock users data");
-        const mockUsers = [
-            {
-                id: 1,
-                name: "Admin User",
-                email: "admin@example.com",
-                chat_id: 123456789,
-                role: "admin",
-                password: "hashed_password",
-                email_verified_at: "2024-01-01T00:00:00Z",
-                remember_token: "",
-                created_at: "2024-01-01T00:00:00Z",
-                updated_at: "2024-01-01T00:00:00Z",
-            },
-            {
-                id: 2,
-                name: "Regular User",
-                email: "user@example.com",
-                chat_id: 987654321,
-                role: "user",
-                password: "hashed_password",
-                email_verified_at: "",
-                remember_token: "",
-                created_at: "2024-01-02T00:00:00Z",
-                updated_at: "2024-01-02T00:00:00Z",
-            },
-        ];
+        const mockUsers = [];
 
         this.saveUsers(mockUsers);
         return mockUsers;
@@ -253,7 +415,7 @@ class DataManager {
 
         try {
             const response = await fetch(`/web/${id}`, {
-                method: "POST", // Laravel PUT so‘rovini POST orqali qabul qiladi
+                method: "POST", // Laravel PUT so'rovini POST orqali qabul qiladi
                 body: formData,
             });
 
@@ -281,13 +443,13 @@ class DataManager {
 
         try {
             const response = await fetch(`/web/${id}`, {
-                method: "POST", // Laravel DELETE so‘rovini POST orqali qabul qiladi
+                method: "POST", // Laravel DELETE so'rovini POST orqali qabul qiladi
                 body: formData,
             });
 
-            if (!response.ok) throw new Error("O‘chirishda xatolik");
+            if (!response.ok) throw new Error("O'chirishda xatolik");
             const result = await response.json();
-            console.log("Serverdan o‘chirish javobi:", result);
+            console.log("Serverdan o'chirish javobi:", result);
         } catch (error) {
             console.error("Serverga delete yuborishda xatolik:", error);
         }
@@ -327,9 +489,9 @@ class DataManager {
             });
 
             if (!response.ok)
-                throw new Error("Foydalanuvchi qo‘shishda xatolik");
+                throw new Error("Foydalanuvchi qo'shishda xatolik");
             const result = await response.json();
-            console.log("Serverga qo‘shildi:", result);
+            console.log("Serverga qo'shildi:", result);
         } catch (error) {
             console.error("Serverga addUser yuborishda xatolik:", error);
         }
@@ -396,9 +558,9 @@ class DataManager {
             });
 
             if (!response.ok)
-                throw new Error("Foydalanuvchini o‘chirishda xatolik");
+                throw new Error("Foydalanuvchini o'chirishda xatolik");
             const result = await response.json();
-            console.log("Serverdan o‘chirildi:", result);
+            console.log("Serverdan o'chirildi:", result);
         } catch (error) {
             console.error("Serverga deleteUser yuborishda xatolik:", error);
         }
@@ -411,11 +573,18 @@ class DataManager {
         const faculties = [
             ...new Set(this.students.map((s) => s.fakultet).filter((f) => f)),
         ];
-        const admins = this.users.filter((u) => u.role === "admin");
+
+        // Filter users based on permissions
+        const visibleUsers = this.permissionManager.filterUsersByRole(
+            this.users
+        );
+        const admins = visibleUsers.filter(
+            (u) => u.role === "admin" || u.role === "super_admin"
+        );
 
         return {
             totalStudents: this.students.length,
-            totalUsers: this.users.length,
+            totalUsers: visibleUsers.length,
             totalFaculties: faculties.length,
             totalAdmins: admins.length,
         };
@@ -426,6 +595,10 @@ class DataManager {
 class UIManager {
     constructor(dataManager) {
         this.dataManager = dataManager;
+        this.currentSearchQueries = {
+            students: "",
+            users: "",
+        };
         this.init();
     }
 
@@ -433,11 +606,46 @@ class UIManager {
         console.log("Initializing UI...");
         console.log("Students count:", this.dataManager.students.length);
         console.log("Users count:", this.dataManager.users.length);
+        console.log(
+            "Current user role:",
+            this.dataManager.permissionManager.currentUserRole
+        );
 
         this.setupEventListeners();
         this.updateStats();
+        this.checkPermissions();
         this.renderStudentsTable();
         this.renderUsersTable();
+    }
+
+    checkPermissions() {
+        const permissionManager = this.dataManager.permissionManager;
+
+        // Check students tab access
+        const studentsTab = document.getElementById("studentsTab");
+        if (!permissionManager.canAccess("students", "view")) {
+            if (studentsTab) studentsTab.style.display = "none";
+        }
+
+        // Check users tab access
+        const usersTab = document.getElementById("usersTab");
+        if (!permissionManager.canAccess("users", "view")) {
+            if (usersTab) usersTab.style.display = "none";
+        }
+
+        // Check add buttons
+        const addStudentBtn = document.getElementById("addStudentBtn");
+        if (
+            addStudentBtn &&
+            !permissionManager.canAccess("students", "create")
+        ) {
+            addStudentBtn.style.display = "none";
+        }
+
+        const addUserBtn = document.getElementById("addUserBtn");
+        if (addUserBtn && !permissionManager.canAccess("users", "create")) {
+            addUserBtn.style.display = "none";
+        }
     }
 
     setupEventListeners() {
@@ -445,22 +653,46 @@ class UIManager {
         document.querySelectorAll(".tab-btn").forEach((btn) => {
             btn.addEventListener("click", (e) => {
                 const tab = e.target.closest(".tab-btn").dataset.tab;
-                this.switchTab(tab);
+                if (tab) {
+                    this.switchTab(tab);
+                }
             });
         });
 
-        // Search functionality
+        // Enhanced search functionality with debouncing
         const studentSearch = document.getElementById("studentSearch");
         if (studentSearch) {
             studentSearch.addEventListener("input", (e) => {
-                this.renderStudentsTable(e.target.value);
+                this.currentSearchQueries.students = e.target.value;
+                this.dataManager.searchManager.debounceSearch(
+                    "studentSearch",
+                    () => {
+                        this.dataManager.paginationManager.setCurrentPage(
+                            "students",
+                            1
+                        );
+                        this.renderStudentsTable();
+                    },
+                    e.target.value
+                );
             });
         }
 
         const userSearch = document.getElementById("userSearch");
         if (userSearch) {
             userSearch.addEventListener("input", (e) => {
-                this.renderUsersTable(e.target.value);
+                this.currentSearchQueries.users = e.target.value;
+                this.dataManager.searchManager.debounceSearch(
+                    "userSearch",
+                    () => {
+                        this.dataManager.paginationManager.setCurrentPage(
+                            "users",
+                            1
+                        );
+                        this.renderUsersTable();
+                    },
+                    e.target.value
+                );
             });
         }
 
@@ -468,14 +700,28 @@ class UIManager {
         const addStudentBtn = document.getElementById("addStudentBtn");
         if (addStudentBtn) {
             addStudentBtn.addEventListener("click", () => {
-                this.openStudentModal();
+                if (
+                    this.dataManager.permissionManager.canAccess(
+                        "students",
+                        "create"
+                    )
+                ) {
+                    this.openStudentModal();
+                }
             });
         }
 
         const addUserBtn = document.getElementById("addUserBtn");
         if (addUserBtn) {
             addUserBtn.addEventListener("click", () => {
-                this.openUserModal();
+                if (
+                    this.dataManager.permissionManager.canAccess(
+                        "users",
+                        "create"
+                    )
+                ) {
+                    this.openUserModal();
+                }
             });
         }
 
@@ -597,10 +843,9 @@ class UIManager {
         if (totalAdminsEl) totalAdminsEl.textContent = stats.totalAdmins;
     }
 
-    // Students table
-    renderStudentsTable(searchTerm = "") {
+    // Students table with pagination
+    renderStudentsTable() {
         console.log("Rendering students table...");
-        console.log("Students data:", this.dataManager.students);
 
         const tbody = document.getElementById("studentsTableBody");
         const countElement = document.getElementById("studentsCount");
@@ -610,20 +855,32 @@ class UIManager {
             return;
         }
 
-        let students = [...this.dataManager.students];
-        console.log("Students before filter:", students);
+        // Check permissions
+        if (!this.dataManager.permissionManager.canAccess("students", "view")) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="permission-denied">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        <h3>Ruxsat berilmagan</h3>
+                        <p>Sizda talabalar ma'lumotlarini ko'rish huquqi yo'q</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
 
-        // Filter by search term
-        if (searchTerm) {
-            students = students.filter((student) =>
-                Object.values(student).some(
-                    (value) =>
-                        value &&
-                        value
-                            .toString()
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                )
+        let students = [...this.dataManager.students];
+
+        // Apply search filter
+        const searchQuery = this.currentSearchQueries.students;
+        if (searchQuery) {
+            students = this.dataManager.searchManager.searchStudents(
+                students,
+                searchQuery
             );
         }
 
@@ -635,7 +892,7 @@ class UIManager {
             let aValue = a[sortField];
             let bValue = b[sortField];
 
-            // Agar qiymatlar son bo‘lsa — raqam sifatida solishtiramiz
+            // Agar qiymatlar son bo'lsa — raqam sifatida solishtiramiz
             const isNumeric = !isNaN(parseFloat(aValue)) && isFinite(aValue);
 
             if (isNumeric) {
@@ -655,22 +912,52 @@ class UIManager {
                 : bValue.localeCompare(aValue);
         });
 
-        console.log("Students after filter and sort:", students);
+        // Apply pagination
+        const currentPage =
+            this.dataManager.paginationManager.getCurrentPage("students");
+        const paginatedStudents = this.dataManager.paginationManager.paginate(
+            students,
+            currentPage
+        );
+
+        // Render pagination
+        this.dataManager.paginationManager.renderPagination(
+            "students",
+            students.length,
+            () => {
+                this.renderStudentsTable();
+            }
+        );
 
         // Render rows
-        if (students.length === 0) {
+        if (paginatedStudents.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="empty-state">Talabalar topilmadi</td>
+                    <td colspan="7" class="empty-state">
+                        ${
+                            searchQuery
+                                ? "Qidiruv bo'yicha talabalar topilmadi"
+                                : "Talabalar topilmadi"
+                        }
+                    </td>
                 </tr>
             `;
         } else {
-            tbody.innerHTML = students
+            const canEdit = this.dataManager.permissionManager.canAccess(
+                "students",
+                "edit"
+            );
+            const canDelete = this.dataManager.permissionManager.canAccess(
+                "students",
+                "delete"
+            );
+
+            tbody.innerHTML = paginatedStudents
                 .map(
                     (student) => `
                 <tr>
-                    <td>${student.id}</td>
-                    <td><strong>${student.talaba_id || "-"}</strong></td>
+                   <td>${student.id}</td>
+                        <td><strong>${student.talaba_id || "-"}</strong></td>
                     <td><strong>${student.fish || "-"}</strong></td>
                     <td><span class="badge badge-secondary">${
                         student.fakultet || "-"
@@ -682,23 +969,27 @@ class UIManager {
                     <td>${student.doimiy_yashash_viloyati || "-"}</td>
                     <td>${student.doimiy_yashash_tumani || "-"}</td>
                     <td>${student.doimiy_yashash_manzili || "-"}</td>
-                    <td><a href='${
+                    <td><a href="${
                         student.doimiy_yashash_manzili_urli || "#"
-                    }' target="_blank">${
-                        student.doimiy_yashash_manzili_urli
-                            ? "Xaritadan ko'rish"
-                            : "-"
-                    }</a></td>
+                    }" target="_blank">
+                        ${
+                            student.doimiy_yashash_manzili_urli
+                                ? "Xaritadan ko'rish"
+                                : "-"
+                        }
+                    </a></td>
                     <td>${student.vaqtincha_yashash_viloyati || "-"}</td>
                     <td>${student.vaqtincha_yashash_tumani || "-"}</td>
                     <td>${student.vaqtincha_yashash_manzili || "-"}</td>
-                    <td><a href='${
+                    <td><a href="${
                         student.vaqtincha_yashash_manzili_urli || "#"
-                    }' target="_blank">${
-                        student.vaqtincha_yashash_manzili_urli
-                            ? "Xaritadan ko'rish"
-                            : "-"
-                    }</a></td>
+                    }" target="_blank">
+                        ${
+                            student.vaqtincha_yashash_manzili_urli
+                                ? "Xaritadan ko'rish"
+                                : "-"
+                        }
+                    </a></td>
                     <td>${student.uy_egasi || "-"}</td>
                     <td>${student.uy_egasi_telefoni || "-"}</td>
                     <td>${student.yotoqxona_nomeri || "-"}</td>
@@ -709,28 +1000,16 @@ class UIManager {
                         <div class="action-buttons">
                             <button class="btn-icon" onclick="ui.editStudent(${
                                 student.id
-                            })">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                </svg>
-                            </button>
+                            })">✏️</button>
                             <button class="btn-icon danger" onclick="ui.deleteStudent(${
                                 student.id
-                            })">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3,6 5,6 21,6"/>
-                                    <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
-                                </svg>
-                            </button>
+                            })">🗑️</button>
                         </div>
                     </td>
                 </tr>
             `
                 )
                 .join("");
-
-            console.log("Jami talabalar -> ", students);
         }
 
         if (countElement) {
@@ -751,9 +1030,7 @@ class UIManager {
             this.dataManager.sortDirection.students = "asc";
         }
 
-        const searchTerm =
-            document.getElementById("studentSearch")?.value || "-";
-        this.renderStudentsTable(searchTerm);
+        this.renderStudentsTable();
     }
 
     updateSortIcons(table) {
@@ -776,10 +1053,9 @@ class UIManager {
         }
     }
 
-    // Users table
-    renderUsersTable(searchTerm = "") {
+    // Users table with pagination and role filtering
+    renderUsersTable() {
         console.log("Rendering users table...");
-        console.log("Users data:", this.dataManager.users);
 
         const tbody = document.getElementById("usersTableBody");
         const countElement = document.getElementById("usersCount");
@@ -789,19 +1065,35 @@ class UIManager {
             return;
         }
 
-        let users = [...this.dataManager.users];
+        // Check permissions
+        if (!this.dataManager.permissionManager.canAccess("users", "view")) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="permission-denied">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        <h3>Ruxsat berilmagan</h3>
+                        <p>Sizda foydalanuvchilar ma'lumotlarini ko'rish huquqi yo'q</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
 
-        // Filter by search term
-        if (searchTerm) {
-            users = users.filter((user) =>
-                Object.values(user).some(
-                    (value) =>
-                        value &&
-                        value
-                            .toString()
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                )
+        // Filter users by role permissions
+        let users = this.dataManager.permissionManager.filterUsersByRole([
+            ...this.dataManager.users,
+        ]);
+
+        // Apply search filter
+        const searchQuery = this.currentSearchQueries.users;
+        if (searchQuery) {
+            users = this.dataManager.searchManager.searchUsers(
+                users,
+                searchQuery
             );
         }
 
@@ -810,8 +1102,8 @@ class UIManager {
         const sortDirection = this.dataManager.sortDirection.users;
 
         users.sort((a, b) => {
-            const aValue = a[sortField]?.toString() || "-";
-            const bValue = b[sortField]?.toString() || "-";
+            const aValue = a[sortField]?.toString() || "";
+            const bValue = b[sortField]?.toString() || "";
 
             if (sortDirection === "asc") {
                 return aValue.localeCompare(bValue);
@@ -820,15 +1112,47 @@ class UIManager {
             }
         });
 
+        // Apply pagination
+        const currentPage =
+            this.dataManager.paginationManager.getCurrentPage("users");
+        const paginatedUsers = this.dataManager.paginationManager.paginate(
+            users,
+            currentPage
+        );
+
+        // Render pagination
+        this.dataManager.paginationManager.renderPagination(
+            "users",
+            users.length,
+            () => {
+                this.renderUsersTable();
+            }
+        );
+
         // Render rows
-        if (users.length === 0) {
+        if (paginatedUsers.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="empty-state">Foydalanuvchilar topilmadi</td>
+                    <td colspan="7" class="empty-state">
+                        ${
+                            searchQuery
+                                ? "Qidiruv bo'yicha foydalanuvchilar topilmadi"
+                                : "Foydalanuvchilar topilmadi"
+                        }
+                    </td>
                 </tr>
             `;
         } else {
-            tbody.innerHTML = users
+            const canEdit = this.dataManager.permissionManager.canAccess(
+                "users",
+                "edit"
+            );
+            const canDelete = this.dataManager.permissionManager.canAccess(
+                "users",
+                "delete"
+            );
+
+            tbody.innerHTML = paginatedUsers
                 .map(
                     (user) => `
                 <tr>
@@ -838,26 +1162,34 @@ class UIManager {
                     <td>${user.chat_id || "-"}</td>
                     <td><span class="badge ${this.getRoleBadgeClass(
                         user.role
-                    )}">${user.role || "user"}</span></td>
+                    )}">${this.getRoleDisplayName(user.role)}</span></td>
                     <td>${this.formatDate(user.created_at)}</td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-icon" onclick="ui.editUser(${
-                                user.id
-                            })">
+                            ${
+                                canEdit
+                                    ? `
+                            <button class="btn-icon" onclick="ui.editUser(${user.id})" title="Tahrirlash">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                 </svg>
                             </button>
-                            <button class="btn-icon danger" onclick="ui.deleteUser(${
-                                user.id
-                            })">
+                            `
+                                    : ""
+                            }
+                            ${
+                                canDelete
+                                    ? `
+                            <button class="btn-icon danger" onclick="ui.deleteUser(${user.id})" title="O'chirish">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3,6 5,6 21,6"/>
                                     <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
                                 </svg>
                             </button>
+                            `
+                                    : ""
+                            }
                         </div>
                     </td>
                 </tr>
@@ -894,18 +1226,30 @@ class UIManager {
             this.dataManager.sortDirection.users = "asc";
         }
 
-        const searchTerm = document.getElementById("userSearch")?.value || "-";
-        this.renderUsersTable(searchTerm);
+        this.renderUsersTable();
     }
 
     getRoleBadgeClass(role) {
         switch (role) {
-            case "admin":
+            case "super_admin":
                 return "badge-destructive";
-            case "mentor":
+            case "admin":
                 return "badge-default";
+            case "user":
             default:
                 return "badge-secondary";
+        }
+    }
+
+    getRoleDisplayName(role) {
+        switch (role) {
+            case "super_admin":
+                return "Super Admin";
+            case "admin":
+                return "Admin";
+            case "user":
+            default:
+                return "User";
         }
     }
 
@@ -922,45 +1266,43 @@ class UIManager {
         if (student) {
             title.textContent = "Talabani tahrirlash";
             document.getElementById("talaba_id").value =
-                student.talaba_id || "-";
-            document.getElementById("studentFish").value = student.fish || "-";
+                student.talaba_id || "";
+            document.getElementById("studentFish").value = student.fish || "";
             document.getElementById("studentFakultet").value =
-                student.fakultet || "-";
-            document.getElementById("studentGuruh").value =
-                student.guruh || "-";
+                student.fakultet || "";
+            document.getElementById("studentGuruh").value = student.guruh || "";
             document.getElementById("studentTelefon").value =
-                student.telefon || "-";
+                student.telefon || "";
             document.getElementById("studentTyutori").value =
-                student.tyutori || "-";
-            document.getElementById("studentHudud").value =
-                student.hudud || "-";
+                student.tyutori || "";
+            document.getElementById("studentHudud").value = student.hudud || "";
             document.getElementById("doimiy_yashash_viloyati").value =
-                student.doimiy_yashash_viloyati || "-";
+                student.doimiy_yashash_viloyati || "";
             document.getElementById("doimiy_yashash_tumani").value =
-                student.doimiy_yashash_tumani || "-";
+                student.doimiy_yashash_tumani || "";
             document.getElementById("doimiy_yashash_manzili").value =
-                student.doimiy_yashash_manzili || "-";
+                student.doimiy_yashash_manzili || "";
             document.getElementById("doimiy_yashash_manzili_urli").value =
-                student.doimiy_yashash_manzili_urli || "-";
+                student.doimiy_yashash_manzili_urli || "";
             document.getElementById("vaqtincha_yashash_viloyati").value =
-                student.vaqtincha_yashash_viloyati || "-";
+                student.vaqtincha_yashash_viloyati || "";
             document.getElementById("vaqtincha_yashash_tumani").value =
-                student.vaqtincha_yashash_tumani || "-";
+                student.vaqtincha_yashash_tumani || "";
             document.getElementById("vaqtincha_yashash_manzili").value =
-                student.vaqtincha_yashash_manzili || "-";
+                student.vaqtincha_yashash_manzili || "";
             document.getElementById("vaqtincha_yashash_manzili_urli").value =
-                student.vaqtincha_yashash_manzili_urli || "-";
+                student.vaqtincha_yashash_manzili_urli || "";
             document.getElementById("studentUyEgasi").value =
-                student.uy_egasi || "-";
+                student.uy_egasi || "";
             document.getElementById("studentUyEgasiTelefoni").value =
-                student.uy_egasi_telefoni || "-";
+                student.uy_egasi_telefoni || "";
             document.getElementById("yotoqxona_nomeri").value =
-                student.yotoqxona_nomeri || "-";
-            document.getElementById("studentNarxi").value = student.narx || "-";
+                student.yotoqxona_nomeri || "";
+            document.getElementById("studentNarxi").value = student.narx || "";
             document.getElementById("studentOtaOna").value =
-                student.ota_ona || "-";
+                student.ota_ona || "";
             document.getElementById("studentOtaOnaTelefoni").value =
-                student.ota_ona_telefoni || "-";
+                student.ota_ona_telefoni || "";
             document.getElementById("saveStudentBtn").textContent = "Saqlash";
         } else {
             title.textContent = "Yangi talaba qo'shish";
@@ -1035,6 +1377,11 @@ class UIManager {
     }
 
     editStudent(id) {
+        if (!this.dataManager.permissionManager.canAccess("students", "edit")) {
+            alert("Sizda tahrirlash huquqi yo'q");
+            return;
+        }
+
         const student = this.dataManager.students.find((s) => s.id === id);
         if (student) {
             this.openStudentModal(student);
@@ -1042,6 +1389,13 @@ class UIManager {
     }
 
     deleteStudent(id) {
+        if (
+            !this.dataManager.permissionManager.canAccess("students", "delete")
+        ) {
+            alert("Sizda o'chirish huquqi yo'q");
+            return;
+        }
+
         if (confirm("Talabani o'chirishga ishonchingiz komilmi?")) {
             if (this.dataManager.deleteStudent(id)) {
                 this.renderStudentsTable();
@@ -1062,12 +1416,11 @@ class UIManager {
 
         if (user) {
             title.textContent = "Foydalanuvchini tahrirlash";
-            document.getElementById("userName").value = user.name || "-";
-            document.getElementById("userEmail").value = user.email || "-";
-            document.getElementById("userChatId").value = user.chat_id || "-";
+            document.getElementById("userName").value = user.name || "";
+            document.getElementById("userEmail").value = user.email || "";
+            document.getElementById("userChatId").value = user.chat_id || "";
             document.getElementById("userRole").value = user.role || "user";
-            document.getElementById("userPassword").value =
-                user.password || "-";
+            document.getElementById("userPassword").value = user.password || "";
 
             // Laravel dan kelgan sana formatini to'g'rilash
             if (user.email_verified_at) {
@@ -1130,6 +1483,11 @@ class UIManager {
     }
 
     editUser(id) {
+        if (!this.dataManager.permissionManager.canAccess("users", "edit")) {
+            alert("Sizda tahrirlash huquqi yo'q");
+            return;
+        }
+
         const user = this.dataManager.users.find((u) => u.id === id);
         if (user) {
             this.openUserModal(user);
@@ -1137,6 +1495,11 @@ class UIManager {
     }
 
     deleteUser(id) {
+        if (!this.dataManager.permissionManager.canAccess("users", "delete")) {
+            alert("Sizda o'chirish huquqi yo'q");
+            return;
+        }
+
         if (confirm("Foydalanuvchini o'chirishga ishonchingiz komilmi?")) {
             if (this.dataManager.deleteUser(id)) {
                 this.renderUsersTable();
@@ -1152,6 +1515,7 @@ function initializeApp() {
     console.log("Laravel ma'lumotlari:", {
         students: window.mockStudents1 ? window.mockStudents1.length : 0,
         users: window.mockUsers1 ? window.mockUsers1.length : 0,
+        currentUserRole: window.currentUserRole,
     });
 
     // Initialize the application
