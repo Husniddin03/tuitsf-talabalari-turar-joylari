@@ -15,7 +15,7 @@ Route::middleware('auth')->group(function () {
    Route::resource('web', WebController::class);
    Route::resource('admin', AdminController::class);
    Route::get('setwebhook', function () {
-      $response = Telegram::setWebhook(['url' => 'https://1a64677b2bff.ngrok-free.app/api/telegram/webhook']);
+      $response = Telegram::setWebhook(['url' => 'https://dd29ee0c1c9b.ngrok-free.app/api/telegram/webhook']);
    });
 });
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');

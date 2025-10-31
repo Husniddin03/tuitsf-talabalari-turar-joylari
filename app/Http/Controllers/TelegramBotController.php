@@ -43,7 +43,7 @@ class TelegramBotController extends Controller
         $user = User::where('chat_id', $chatId)->first();
 
         if ($user) {
-            return $user->role === 'admin';
+            return $user->role === 'admin' || $user->role === 'super_admin';
         } else {
             // Yangi foydalanuvchini ro‘yxatdan o‘tkazamiz
             User::create([

@@ -107,13 +107,31 @@ class MessagesController extends Controller
         $text .= "👥 *Guruh:* {$student->guruh}\n";
         $text .= "📞 *Telefon:* {$student->telefon}\n";
         $text .= "👨‍🏫 *Tyutori:* {$student->tyutori}\n";
-        $text .= "🌍 *Hudud:* {$student->hudud}\n";
-        $text .= "🏠 *Uy egasi:* {$student->uy_egasi}\n";
-        $text .= "📱 *Uy egasi telefoni:* {$student->uy_egasi_telefoni}\n";
-        $text .= "💰 *Narxi:* {$student->narx}\n";
+        $text .= "🌍 *Hudud:* {$student->hudud}\n\n";
+
+        $text .= "📍 *Doimiy yashash manzili:*\n";
+        $text .= "   • Viloyat: {$student->doimiy_yashash_viloyati}\n";
+        $text .= "   • Tuman: {$student->doimiy_yashash_tumani}\n";
+        $text .= "   • Manzil: {$student->doimiy_yashash_manzili}\n";
+        $text .= "   🗺 [Xaritada ko'rish]({$student->doimiy_yashash_manzili_urli})\n\n";
+
+        $text .= "🏘️ *Vaqtincha yashash manzili:*\n";
+
+        if (isset($student->yotoqxona_nomeri)) {
+            $text .= "🏨 *Yotoqxona nomeri:* {$student->yotoqxona_nomeri}\n";
+        } else {
+            $text .= "   • Viloyat: {$student->vaqtincha_yashash_viloyati}\n";
+            $text .= "   • Tuman: {$student->vaqtincha_yashash_tumani}\n";
+            $text .= "   • Manzil: {$student->vaqtincha_yashash_manzili}\n";
+            $text .= "   🗺 [Xaritada ko'rish]({$student->vaqtincha_yashash_manzili_urli})\n\n";
+
+            $text .= "🏠 *Uy egasi:* {$student->uy_egasi}\n";
+            $text .= "📱 *Uy egasi telefoni:* {$student->uy_egasi_telefoni}\n";
+        }
+        $text .= "💰 *Narxi:* {$student->narx}\n\n";
+
         $text .= "👨‍👩‍👧‍👦 *Ota-onasi:* {$student->ota_ona}\n";
         $text .= "📞 *Ota-onasi telefoni:* {$student->ota_ona_telefoni}\n";
-        $text .= "📍 *Manzil:* {$student->manzil}\n";
 
 
         if (!empty($student->url_manzil)) {
