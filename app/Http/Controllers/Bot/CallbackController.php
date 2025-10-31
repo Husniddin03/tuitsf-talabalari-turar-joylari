@@ -38,10 +38,10 @@ class CallbackController extends Controller
                     . "• 📞 *Telefon raqami*\n"
                     . "• 👥 *Guruh*\n"
                     . "• 👨‍🏫 *Tyutori*\n"
-                    . "• 🌍 *Hudud*\n"
+                    . "• 🌍 *Hudud (yashil, saqriq, qizil)*\n"
                     . "• 🏨 *Yotoqxona nomeri*\n"
                     . "• 👨‍👩‍👧‍👦 *Ota-ona*\n\n"
-                    . "_Masalan:_ `Kompyuter injiniringi` yoki `KI24-03` yoki `Andijon`",
+                    . "_Masalan:_ `Kompyuter injiniringi` yoki `KI24-03` yoki `yashil`",
                 'parse_mode' => 'Markdown',
             ]);
         } elseif (strpos($data, 'download') === 0) {

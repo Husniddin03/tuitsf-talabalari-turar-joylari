@@ -127,11 +127,25 @@ class MessagesController extends Controller
         $text .= "👨‍👩‍👧‍👦 *Ota-onasi:* {$student->ota_ona}\n";
         $text .= "📞 *Ota-onasi telefoni:* {$student->ota_ona_telefoni}\n";
 
+        $keyboard = [
+            [
+                [
+                    'text' => '🔙 Orqaga',
+                    'callback_data' => 'start'
+                ]
+            ]
+        ];
+
+        $reply_markup = Keyboard::make([
+            'inline_keyboard' => $keyboard
+        ]);
+
         Telegram::sendMessage([
             'chat_id' => $chatId,
             'text' => $text,
             'parse_mode' => 'Markdown',
-            'disable_web_page_preview' => true
+            'disable_web_page_preview' => true,
+            'reply_markup' => $reply_markup
         ]);
     }
 
