@@ -17,7 +17,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'chat_id' => 'required|numeric|unique:users',
-            'role' => 'nullable|string|in:user,admin,superadmin',
+            'role' => 'nullable|string|in:user,admin,super_admin',
             'password' => 'required|string|min:6',
         ]);
 

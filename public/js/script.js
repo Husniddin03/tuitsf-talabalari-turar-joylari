@@ -518,7 +518,7 @@ class DataManager {
             formData.append(key, updatedUser[key]);
         }
         formData.append("_method", "PUT");
-
+        
         const csrfToken = document.querySelector('input[name="_token"]')?.value;
         if (csrfToken) formData.append("_token", csrfToken);
 

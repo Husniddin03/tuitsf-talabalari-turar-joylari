@@ -513,7 +513,7 @@
                     <label for="userPassword">Parol *</label>
                     <input name="password" type="password" id="userPassword">
                 </div>
-                <div class="form-group">
+                <div hidden class="form-group">
                     <label for="userEmailVerified">Email tasdiqlangan vaqt</label>
                     <input name="email_verified_at" type="datetime-local" id="userEmailVerified">
                 </div>

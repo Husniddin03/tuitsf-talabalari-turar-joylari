@@ -80,29 +80,43 @@
             margin-top: 40px;
             letter-spacing: 4px
         }
+
+        .error {
+            background: #ff4d4d;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="login-box">
-        <h2>Login</h2>
-        <form action="{{ route('checkAuth') }}" method="post">
+        <h2>Talaba tizimiga kirish</h2>
+
+        @if (session('error'))
+            <div class="error">{{ session('error') }}</div>
+        @endif
+
+        <form action="{{ route('verifiy.chekLogin') }}" method="POST">
             @csrf
             <div class="user-box">
-                <input name="email" type="text" name="" required="">
-                <label>Email</label>
+                <input type="number" name="talaba_id" value="{{ session('talaba_id') ?? old('talaba_id') }}"
+                    required>
+                <label>Student ID</label>
             </div>
-            <div class="user-box">
-                <input name="password" type="password" name="" required="">
-                <label>Password</label>
-            </div>
-            <div class="user-box">
-                <button type="submit" class="login">submit</button>
-            </div>
+
+            @if (session('talaba_id'))
+                <div class="user-box">
+                    <input type="password" name="password" required>
+                    <label>Parol</label>
+                </div>
+            @endif
+
+            <button type="submit">Kirish</button>
         </form>
-        <div>
-            <a href="{{ route('verifiy.login') }}">I am Student</a>
-        </div>
     </div>
 </body>
 

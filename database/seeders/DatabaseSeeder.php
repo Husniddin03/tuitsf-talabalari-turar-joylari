@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'tuitadmin@gmail.com',
             'chat_id' => 7213131586,
             'password' => 'tuitsecret',
-            'role' => 'admin'
+            'role' => 'super_admin'
         ]);
     }
 }

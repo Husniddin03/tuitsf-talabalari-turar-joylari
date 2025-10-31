@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\StudentsVerifiyController;
 use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -18,3 +19,9 @@ Route::middleware('auth')->group(function () {
    });
 });
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+
+Route::get('verifiy/login', [StudentsVerifiyController::class, 'login'])->name('verifiy.login');
+Route::post('verifiy/chekLogin', [StudentsVerifiyController::class, 'chekLogin'])->name('verifiy.chekLogin');
+Route::post('verifiy/update/{id}', [StudentsVerifiyController::class, 'update'])->name('verifiy.update');
+Route::get('verifiy/index', [StudentsVerifiyController::class, 'index'])->name('verifiy.index');

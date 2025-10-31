@@ -29,4 +29,9 @@ class Student extends Model
         'ota_ona',
         'ota_ona_telefoni',
     ];
+
+    public function verifiy()
+    {
+        return $this->hasOne(StudentsVerifiy::class, 'student_id');
+    }
 }

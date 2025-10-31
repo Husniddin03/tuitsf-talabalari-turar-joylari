@@ -32,12 +32,12 @@ class LoginController extends Controller
             ]);
         }
 
-        // 4. Rolini tekshiramiz
-        if ($user->role !== 'admin') {
-            return back()->withErrors([
-                'email' => 'Faqat admin kirishi mumkin!',
-            ]);
-        }
+        // // 4. Rolini tekshiramiz
+        // if ($user->role !== 'admin') {
+        //     return back()->withErrors([
+        //         'email' => 'Faqat admin kirishi mumkin!',
+        //     ]);
+        // }
 
         // 5. Auth orqali login qilish
         Auth::login($user);

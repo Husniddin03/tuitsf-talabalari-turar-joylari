@@ -36,6 +36,18 @@ return new class extends Migration
             $table->string('ota_ona_telefoni')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('students_verifiy', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('student_id');
+            $table->string('password')->nullable();
+            $table->timestamps();
+
+            $table->foreign('student_id')
+                ->references('id')
+                ->on('students')
+                ->onDelete('cascade');
+        });
     }
 
     /**
@@ -44,5 +56,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('students');
+        Schema::dropIfExists('students_verifiy');
     }
 };
