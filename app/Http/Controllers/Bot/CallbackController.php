@@ -30,15 +30,18 @@ class CallbackController extends Controller
         } elseif (strpos($data, 'search') === 0) {
             Telegram::sendMessage([
                 'chat_id' => $update->callbackQuery->message->chat->id,
-                'text' => "🔎 *Talaba qidiruv bo‘limi*\n\n"
-                    . "Quyidagi ma’lumotlardan biri orqali talabani qidiring:\n\n"
+                'text' => "🔎 *Talaba qidiruv bo'limi*\n\n"
+                    . "Quyidagi ma'lumotlardan biri orqali talabani qidiring:\n\n"
                     . "• 👤 *F.I.Sh.* (Ism Familiya)\n"
-                    . "• 🏫 *Fakultet*\n"
+                    . "• 🆔 *ID* (Talaba ID)\n"
+                    . "• 🏛️ *Fakultet*\n"
                     . "• 📞 *Telefon raqami*\n"
-                    . "• 🧑‍🎓 *Guruh*\n"
+                    . "• 👥 *Guruh*\n"
                     . "• 👨‍🏫 *Tyutori*\n"
-                    . "• 📍 *Hudud*\n\n"
-                    . "_Masalan:_ `Kompyuter injiniringi` yoki `KI24-03`",
+                    . "• 🌍 *Hudud*\n"
+                    . "• 🏨 *Yotoqxona nomeri*\n"
+                    . "• 👨‍👩‍👧‍👦 *Ota-ona*\n\n"
+                    . "_Masalan:_ `Kompyuter injiniringi` yoki `KI24-03` yoki `Andijon`",
                 'parse_mode' => 'Markdown',
             ]);
         } elseif (strpos($data, 'download') === 0) {

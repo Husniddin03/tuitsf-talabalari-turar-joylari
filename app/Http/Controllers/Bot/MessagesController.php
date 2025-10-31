@@ -34,41 +34,116 @@ class MessagesController extends Controller
     }
 
     public function search($chatId, $query)
-    {
-        // 🔍 Talabani bir nechta ustunlar bo‘yicha qidiramiz
-        $students = Student::where('fish', 'LIKE', "%{$query}%")
-            ->orWhere('fakultet', 'LIKE', "%{$query}%")
-            ->orWhere('telefon', 'LIKE', "%{$query}%")
-            ->orWhere('guruh', 'LIKE', "%{$query}%")
-            ->orWhere('tyutori', 'LIKE', "%{$query}%")
-            ->orWhere('hudud', 'LIKE', "%{$query}%")
-            ->get();
+{
+    // 🔍 Talabani bir nechta ustunlar bo'yicha qidiramiz
+    $students = Student::where('fish', 'LIKE', "%{$query}%")
+        ->orWhere('talaba_id', 'LIKE', "%{$query}%")
+        ->orWhere('fakultet', 'LIKE', "%{$query}%")
+        ->orWhere('telefon', 'LIKE', "%{$query}%")
+        ->orWhere('guruh', 'LIKE', "%{$query}%")
+        ->orWhere('tyutori', 'LIKE', "%{$query}%")
+        ->orWhere('hudud', 'LIKE', "%{$query}%")
+        ->orWhere('doimiy_yashash_viloyati', 'LIKE', "%{$query}%")
+        ->orWhere('doimiy_yashash_tumani', 'LIKE', "%{$query}%")
+        ->orWhere('vaqtincha_yashash_viloyati', 'LIKE', "%{$query}%")
+        ->orWhere('vaqtincha_yashash_tumani', 'LIKE', "%{$query}%")
+        ->orWhere('uy_egasi', 'LIKE', "%{$query}%")
+        ->orWhere('yotoqxona_nomeri', 'LIKE', "%{$query}%")
+        ->orWhere('ota_ona', 'LIKE', "%{$query}%")
+        ->get();
 
-        // 🔸 Agar hech kim topilmasa
-        if ($students->isEmpty()) {
-            Telegram::sendMessage([
-                'chat_id' => $chatId,
-                'text' => "❌ Talaba topilmadi.\n\nIltimos, boshqa ma’lumot kiriting.",
-            ]);
-            return;
-        }
-
-        // 🔸 Topilgan talabalarni ko‘rsatish
-        $count = $students->count();
+    // 🔸 Agar hech kim topilmasa
+    if ($students->isEmpty()) {
         Telegram::sendMessage([
             'chat_id' => $chatId,
-            'text' => "✅ {$count} ta talaba topildi:",
+            'text' => "❌ *Talaba topilmadi*\n\n"
+                . "📝 Qidiruv so'rovi: `{$query}`\n\n"
+                . "💡 Iltimos, boshqa ma'lumot bilan qayta urinib ko'ring.",
+            'parse_mode' => 'Markdown'
         ]);
+        return;
+    }
 
-        // 🔸 Har bir topilgan talaba uchun alohida funksiya chaqiramiz
-        foreach ($students as $student) {
-            $this->student($chatId, $student->id);
-        }
+    // 🔸 Topilgan talabalar sonini ko'rsatish
+    $count = $students->count();
+    
+    if ($count > 20) {
         Telegram::sendMessage([
             'chat_id' => $chatId,
-            'text' => "✅ {$count} ta talaba topildi:",
+            'text' => "⚠️ *Juda ko'p natija topildi!*\n\n"
+                . "📊 Jami: *{$count} ta* talaba\n\n"
+                . "💡 Iltimos, qidiruvni aniqroq kiriting.\n"
+                . "_Masalan: to'liq ism, guruh nomeri yoki aniq fakultet nomi_",
+            'parse_mode' => 'Markdown'
+        ]);
+        return;
+    }
+
+    Telegram::sendMessage([
+        'chat_id' => $chatId,
+        'text' => "✅ *Qidiruv natijalari*\n\n"
+            . "📊 Topildi: *{$count} ta* talaba\n"
+            . "🔎 So'rov: `{$query}`\n\n"
+            . "⏳ Ma'lumotlar yuklanmoqda...",
+        'parse_mode' => 'Markdown'
+    ]);
+
+    // 🔸 Har bir topilgan talaba uchun ma'lumotlarni yuborish
+    foreach ($students as $index => $student) {
+        sleep(1); // Telegram spam himoyasi uchun
+        
+        $text = "👤 *Student Ma'lumotlari* (".($index + 1)."/$count)\n\n";
+        $text .= "🆔 *Talaba ID:* {$student->talaba_id}\n";
+        $text .= "🧑‍🎓 *F.I.SH:* {$student->fish}\n";
+        $text .= "🏛️ *Fakultet:* {$student->fakultet}\n";
+        $text .= "👥 *Guruh:* {$student->guruh}\n";
+        $text .= "📞 *Telefon:* {$student->telefon}\n";
+        $text .= "👨‍🏫 *Tyutori:* {$student->tyutori}\n";
+        $text .= "🌍 *Hudud:* {$student->hudud}\n\n";
+
+        $text .= "📍 *Doimiy yashash manzili:*\n";
+        $text .= "   • Viloyat: {$student->doimiy_yashash_viloyati}\n";
+        $text .= "   • Tuman: {$student->doimiy_yashash_tumani}\n";
+        $text .= "   • Manzil: {$student->doimiy_yashash_manzili}\n";
+        if ($student->doimiy_yashash_manzili_urli) {
+            $text .= "   • 🗺️ [Xaritada ko'rish]({$student->doimiy_yashash_manzili_urli})\n";
+        }
+        $text .= "\n";
+
+        $text .= "🏘️ *Vaqtincha yashash manzili:*\n";
+        $text .= "   • Viloyat: {$student->vaqtincha_yashash_viloyati}\n";
+        $text .= "   • Tuman: {$student->vaqtincha_yashash_tumani}\n";
+        $text .= "   • Manzil: {$student->vaqtincha_yashash_manzili}\n";
+        if ($student->vaqtincha_yashash_manzili_urli) {
+            $text .= "   • 🗺️ [Xaritada ko'rish]({$student->vaqtincha_yashash_manzili_urli})\n";
+        }
+        $text .= "\n";
+
+        $text .= "🏠 *Uy egasi:* {$student->uy_egasi}\n";
+        $text .= "📱 *Uy egasi telefoni:* {$student->uy_egasi_telefoni}\n";
+        $text .= "🏨 *Yotoqxona nomeri:* {$student->yotoqxona_nomeri}\n";
+        $text .= "💰 *Narxi:* {$student->narx}\n\n";
+
+        $text .= "👨‍👩‍👧‍👦 *Ota-onasi:* {$student->ota_ona}\n";
+        $text .= "📞 *Ota-onasi telefoni:* {$student->ota_ona_telefoni}\n";
+
+        Telegram::sendMessage([
+            'chat_id' => $chatId,
+            'text' => $text,
+            'parse_mode' => 'Markdown',
+            'disable_web_page_preview' => true
         ]);
     }
+
+    // 🔸 Qidiruv yakunlandi xabari
+    Telegram::sendMessage([
+        'chat_id' => $chatId,
+        'text' => "✅ *Qidiruv yakunlandi*\n\n"
+            . "📊 Jami ko'rsatildi: *{$count} ta* talaba\n\n"
+            . "🔄 Yangi qidiruv uchun ma'lumot yuboring.",
+        'parse_mode' => 'Markdown'
+    ]);
+}
 
 
     public function start($message)
