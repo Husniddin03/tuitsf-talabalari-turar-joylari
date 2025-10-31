@@ -132,7 +132,8 @@
                     <div class="col-12">
                         <p class="mb-0"><strong>Manzil URL:</strong> <a
                                 href="{{ $student->doimiy_yashash_manzili_urli ?? '#' }}"
-                                target="_blank">{{ $student->doimiy_yashash_manzili_urli ? "Xaritadan ko'rish" : '—' }}</a></p>
+                                target="_blank">{{ $student->doimiy_yashash_manzili_urli ? "Xaritadan ko'rish" : '—' }}</a>
+                        </p>
                     </div>
                 </div>
 
@@ -197,6 +198,22 @@
                 </div>
 
                 <button id="editStudentBtn" class="btn btn-primary mt-4 w-100">✏️ Tahrirlash</button>
+                <form action="{{route('verifiy.newPassword', $student->id)}}" method="post" id="editpassform">
+                    @csrf
+                    <h5 class="text-secondary mb-3">Yangi parol</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">Yangi parol</label>
+                            <input name="password" type="password" id="password" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password_confirm" class="form-label">Yangi parol qaytaring</label>
+                            <input name="password_confirmation" type="password" id="password_confirm" class="form-control"
+                                required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-4 w-100">✏️ Parolni saqlash</button>
+                </form>
             </div>
         </div>
 

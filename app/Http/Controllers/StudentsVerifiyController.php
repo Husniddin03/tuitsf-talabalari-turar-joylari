@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\StudentsVerifiy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -92,5 +93,23 @@ class StudentsVerifiyController extends Controller
         $student->update($validated);
 
         return redirect('verifiy/index')->with('success', 'Talaba maʼlumotlari yangilandi.');
+    }
+
+    public function newPassword(Request $request, string $id) {
+        $validated = $request->validate([
+            'password' => 'required|min:8|confirmed', 
+        ]);
+
+        $student = StudentsVerifiy::where('student_id', $id)->first();
+        $validated['password'] = Hash::make($request->password);
+        if($student){
+            $student->update($validated);
+        }else{
+            StudentsVerifiy::create([
+                'student_id' => $id,
+                'password' => $validated['password']
+            ]);
+        }
+        return back()->with('success', 'Parolingiz saqlandi!');
     }
 }
