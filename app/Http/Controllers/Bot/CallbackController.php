@@ -183,6 +183,7 @@ class CallbackController extends Controller
             foreach ($students as $index => $student) {
                 $number = ($page - 1) * $perPage + $index + 1;
                 $text .= "{$number}. {$student->fish}\n";
+                $text .= "      ID: {$student->talaba_id}\n";
                 $text .= "      Tel: {$student->telefon}\n\n";
                 $text .= "      👉 To‘liq ma’lumot: /student_{$student->id}\n\n";
             }
