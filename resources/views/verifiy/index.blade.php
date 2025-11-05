@@ -99,10 +99,14 @@
                 {{ session('success') }}
             </div>
         @endif
-        <div class="text-end my-3 text-danger">
-            <form action="{{ route('verifiy.logout') }}" method="post" class="m-0 p-0">
+        <div class="text-end my-3">
+            <form style="display: flex; flex-direction: column; align-items: flex-end" action="{{ route('verifiy.logout') }}" method="post" class="m-0 p-0 text-end">
                 @csrf
-                <button class="btn btn-danger" type="submit">Logout</button>
+                <button type="submit" class="text-danger settings-btn m-0" id="">
+                    <img width="24" height="24"
+                        src="https://img.icons8.com/?size=100&id=LYzWbTKzKcac&format=png&color=000000" alt="">
+                    Chiqish
+                </button>
             </form>
         </div>
         <div id="studentInfoCard" class="card shadow-sm border-0">

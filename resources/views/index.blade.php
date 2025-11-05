@@ -32,6 +32,16 @@
             color: #155724;
             border-color: #c3e6cb;
         }
+
+        @media (max-width: 768px) {
+            .download-btn {
+                flex-direction: column;
+            }
+            .download-btn button{
+                width: 100%;
+                margin-top: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -49,39 +59,19 @@
                 </div>
                 <div class="header-actions">
                     <span class="user-role" id="currentUserRole">{{ Auth::user()->role ?? 'user' }}</span>
-                    <button class="settings-btn" id="downloadExcel">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3" />
-                            <path d="M12 1v6m0 6v6" />
-                            <path d="M1 12h6m6 0h6" />
-                        </svg>
-                        Yuklash
-                    </button>
+
+                    <form id="logoutForm" action="{{ route('logout') }}" method="POST"
+                        style="display: inline; margin: 0; padding: 0"
+                        onsubmit="return confirm('Haqiqatan ham tizimdan chiqmoqchimisiz?')">
+                        @csrf
+                        <button style="color: red; margin: 0;" type="submit" class="settings-btn" id="">
+                            <img width="24" height="24"
+                                src="https://img.icons8.com/?size=100&id=LYzWbTKzKcac&format=png&color=000000"
+                                alt="">
+                            Chiqish
+                        </button>
+                    </form>
                 </div>
-                <script>
-                    document.getElementById('downloadExcel').addEventListener('click', function() {
-                        const table = document.getElementById('studentsTable');
-                        const rows = Array.from(table.querySelectorAll('tr'));
-
-                        // Jadvaldagi har bir katakni CSV formatga o'tkazamiz
-                        const csvContent = rows.map(row => {
-                            const cols = Array.from(row.querySelectorAll('th, td'));
-                            return cols.map(col => `"${col.innerText.replace(/"/g, '""')}"`).join(',');
-                        }).join('\n');
-
-                        // CSV ni Excel sifatida yuklash
-                        const blob = new Blob(["\uFEFF" + csvContent], {
-                            type: 'text/csv;charset=utf-8;'
-                        });
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = 'students.csv'; // Excel ochadi, lekin aslida CSV
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    });
-                </script>
-
             </div>
         </div>
     </header>
@@ -96,7 +86,7 @@
         </div>
     @endif
 
-    
+
     <!-- Main Content -->
     <main class="main">
         <div class="container">
@@ -173,15 +163,6 @@
                         </svg>
                         Adminlar
                     </button>
-                    <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: inline;"
-                        onsubmit="return confirm('Haqiqatan ham tizimdan chiqmoqchimisiz?')">
-                        @csrf
-                        <button type="submit" class="tab-btn"
-                            style="color: red; background: none; border: none; cursor: pointer;">
-                            Logout
-                        </button>
-                    </form>
-
 
                 </div>
 
@@ -190,13 +171,47 @@
                     <div class="table-card">
                         <div class="table-header">
                             <h2>Talabalar</h2>
-                            <button class="add-btn" id="addStudentBtn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19" />
-                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                </svg>
-                                Yangi talaba
-                            </button>
+                            <div style="display: flex" class="download-btn">
+                                <button style="margin-right: 8px" class="add-btn" id="addStudentBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                    Yangi talaba
+                                </button>
+                                <button style="margin-right: 8px" class="settings-btn" id="downloadExcel">
+                                    <img width="24" height="24"
+                                        src="https://img.icons8.com/?size=100&id=1kX0jH69NbUF&format=png&color=000000"
+                                        alt="">
+                                    Saralanganlarni yuklash
+                                </button>
+                                <!-- CDN orqali SheetJS ni ulang -->
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+                                <script>
+                                    document.getElementById('downloadExcel').addEventListener('click', function() {
+                                        const table = document.getElementById('studentsTable');
+
+                                        // Jadvalni Excel workbook ga o'tkazish
+                                        const wb = XLSX.utils.table_to_book(table, {
+                                            sheet: "Talabalar"
+                                        });
+
+                                        // Excel faylni yuklab olish
+                                        XLSX.writeFile(wb, 'students.xlsx');
+                                    });
+                                </script>
+                                <form style="margin: 0; padding: 0" action="{{ route('download') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="settings-btn" id="alldownloadExcel">
+                                        <img width="24" height="24"
+                                            src="https://img.icons8.com/?size=100&id=1kX0jH69NbUF&format=png&color=000000"
+                                            alt="">
+                                        Barcha talabalarni yuklash
+                                    </button>
+                                </form>
+                            </div>
+
                         </div>
                         <div class="search-container">
                             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"

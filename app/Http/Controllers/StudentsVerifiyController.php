@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StudentExport;
 use App\Models\Student;
 use App\Models\StudentsVerifiy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -35,33 +38,38 @@ class StudentsVerifiyController extends Controller
     {
         $request->validate([
             'talaba_id' => 'required|digits:12',
-            'password' => 'nullable|string',
+            'password' => 'nullable|string|min:6',
         ]);
 
         $student = Student::where('talaba_id', $request->talaba_id)->first();
 
         if (!$student) {
-            return back()->with('error', "Siz tizimda mavjud emassiz!");
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Siz tizimda mavjud emassiz!");
         }
 
         $verifiy = $student->verifiy;
 
         if (!$verifiy || !$verifiy->password) {
             session(['student_id' => $student->id]);
-            return redirect('verifiy/index')->with('success', "Tizimga Muoffaqiyatli kirdingiz!");
+            return redirect('verifiy/index')->with('success', "Tizimga Muoffaqiyatli kirdingiz");
         }
 
         if (!$request->filled('password')) {
-            return back()->with('talaba_id', $request->talaba_id)->with('error', "Parolingiz xato!");
+            return redirect()->back()
+                ->withInput()
+                ->with('talaba_id', $request->talaba_id);
         }
 
         if (Hash::check($request->password, $verifiy->password)) {
             session(['student_id' => $student->id]);
-            return redirect('verifiy/index')->with('success', "Tizimga Muoffaqiyatli kirdingiz!");
-        } else {
-            return back()->with('talaba_id', $request->talaba_id)
-                ->with('error', 'Parol noto‘g‘ri!');
+            return redirect('verifiy/index')->with('success', "Tizimga Muoffaqiyatli kirdingiz");
         }
+
+        return redirect()->back()
+            ->withInput(['talaba_id' => $request->talaba_id])
+            ->with('error', 'Parol noto\'g\'ri!');
     }
 
     public function update(Request $request, string $id)
@@ -132,5 +140,14 @@ class StudentsVerifiyController extends Controller
         }
 
         return back()->with('success', 'Parolingiz saqlandi!');
+    }
+
+    public function download(Request $request)
+    {
+        $data = Student::all();
+        $export = new StudentExport($data);
+        $fileName = 'students_' . time() . '.xlsx';
+
+        return Excel::download($export, $fileName);
     }
 }
