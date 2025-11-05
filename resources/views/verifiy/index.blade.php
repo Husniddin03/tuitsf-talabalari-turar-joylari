@@ -90,6 +90,12 @@
 
 <body>
     <div class="container my-5">
+        <div class="text-end my-3 text-danger">
+            <form action="{{ route('verifiy.logout') }}" method="post" class="m-0 p-0">
+                @csrf
+                <button class="btn btn-danger" type="submit">Logout</button>
+            </form>
+        </div>
         <div id="studentInfoCard" class="card shadow-sm border-0">
             <div class="card-body">
                 <h3 class="card-title mb-4 text-primary">🎓 Talaba ma'lumotlari</h3>
@@ -198,18 +204,24 @@
                 </div>
 
                 <button id="editStudentBtn" class="btn btn-primary mt-4 w-100">✏️ Tahrirlash</button>
-                <form action="{{route('verifiy.newPassword', $student->id)}}" method="post" id="editpassform">
+                <form action="{{ route('verifiy.newPassword', $student->id) }}" method="post" id="editpassform">
                     @csrf
                     <h5 class="text-secondary mb-3">Yangi parol</h5>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label for="password" class="form-label">Yangi parol</label>
                             <input name="password" type="password" id="password" class="form-control" required>
+                            @error('password')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="password_confirm" class="form-label">Yangi parol qaytaring</label>
-                            <input name="password_confirmation" type="password" id="password_confirm" class="form-control"
-                                required>
+                            <input name="password_confirmation" type="password" id="password_confirm"
+                                class="form-control" required>
+                            @error('password_confirmation')
+                                Parolingiz mos kelmadi
+                            @enderror
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-4 w-100">✏️ Parolni saqlash</button>

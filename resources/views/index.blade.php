@@ -344,6 +344,8 @@
                     <label for="studentTyutori">Tyutori</label>
                     <input name="tyutori" type="text" id="studentTyutori">
                 </div>
+                <hr style="margin:20px 0; border:1px solid #ddd;">
+                <h3>📍 Doimiy yashash joyi</h3>
                 <div class="form-group">
                     <label for="studentHudud">Hudud</label>
                     <input name="hudud" type="text" id="studentHudud">
@@ -465,11 +467,11 @@
                     <input name="narx" type="number" id="studentNarxi">
                 </div>
                 <div class="form-group">
-                    <label for="studentOtaOna">Ota - Oan</label>
+                    <label for="studentOtaOna">Ota - Ona</label>
                     <input name="ota_ona" type="text" id="studentOtaOna">
                 </div>
                 <div class="form-group">
-                    <label for="studentOtaOnaTelefoni">Ota - Oan telefoni</label>
+                    <label for="studentOtaOnaTelefoni">Ota - Ona telefoni</label>
                     <input name="ota_ona_telefoni" type="text" id="studentOtaOnaTelefoni">
                 </div>
                 <div class="form-actions">

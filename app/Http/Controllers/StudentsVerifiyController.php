@@ -20,6 +20,11 @@ class StudentsVerifiyController extends Controller
         return view('verifiy.login');
     }
 
+    public function logout(Request $request) {
+        $request->session()->forget('student_id');
+        return redirect()->route('verifiy.login')->with('success', "Muoffaqiyatli chiqdingiz");
+    }
+
     public function chekLogin(Request $request)
     {
         $request->validate([
@@ -97,7 +102,7 @@ class StudentsVerifiyController extends Controller
 
     public function newPassword(Request $request, string $id) {
         $validated = $request->validate([
-            'password' => 'required|min:8|confirmed', 
+            'password' => 'required|min:6|confirmed', 
         ]);
 
         $student = StudentsVerifiy::where('student_id', $id)->first();
