@@ -7,10 +7,15 @@ use App\Models\StudentsVerifiy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+use function PHPUnit\Framework\isEmpty;
+
 class StudentsVerifiyController extends Controller
 {
     public function index()
     {
+        if (!session()->has('student_id')) {
+            return redirect()->route('verifiy.login');
+        }
         $student = Student::find(session('student_id'));
         return view('verifiy.index', compact('student'));
     }
@@ -20,7 +25,8 @@ class StudentsVerifiyController extends Controller
         return view('verifiy.login');
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->session()->forget('student_id');
         return redirect()->route('verifiy.login')->with('success', "Muoffaqiyatli chiqdingiz");
     }
@@ -29,7 +35,7 @@ class StudentsVerifiyController extends Controller
     {
         $request->validate([
             'talaba_id' => 'required|digits:12',
-            'password' => 'nullable|string|min:6',
+            'password' => 'nullable|string',
         ]);
 
         $student = Student::where('talaba_id', $request->talaba_id)->first();
@@ -42,16 +48,16 @@ class StudentsVerifiyController extends Controller
 
         if (!$verifiy || !$verifiy->password) {
             session(['student_id' => $student->id]);
-            return redirect('verifiy/index');
+            return redirect('verifiy/index')->with('success', "Tizimga Muoffaqiyatli kirdingiz!");
         }
 
         if (!$request->filled('password')) {
-            return back()->with('talaba_id', $request->talaba_id);
+            return back()->with('talaba_id', $request->talaba_id)->with('error', "Parolingiz xato!");
         }
 
         if (Hash::check($request->password, $verifiy->password)) {
             session(['student_id' => $student->id]);
-            return redirect('verifiy/index');
+            return redirect('verifiy/index')->with('success', "Tizimga Muoffaqiyatli kirdingiz!");
         } else {
             return back()->with('talaba_id', $request->talaba_id)
                 ->with('error', 'Parol noto‘g‘ri!');
@@ -85,12 +91,12 @@ class StudentsVerifiyController extends Controller
             'ota_ona' => 'nullable|string|max:255',
             'ota_ona_telefoni' => 'nullable|string|max:255',
         ]);
-        if(isset($validated['yotoqxona_nomeri'])){
+        if (isset($validated['yotoqxona_nomeri'])) {
             $validated['vaqtincha_yashash_viloyati'] = null;
             $validated['vaqtincha_yashash_tumani'] = null;
             $validated['vaqtincha_yashash_manzili'] = null;
             $validated['vaqtincha_yashash_manzili_urli'] = null;
-        }else{
+        } else {
             $validated['yotoqxona_nomeri'] = null;
         }
 
@@ -100,21 +106,31 @@ class StudentsVerifiyController extends Controller
         return redirect('verifiy/index')->with('success', 'Talaba maʼlumotlari yangilandi.');
     }
 
-    public function newPassword(Request $request, string $id) {
+    public function newPassword(Request $request, string $id)
+    {
         $validated = $request->validate([
-            'password' => 'required|min:6|confirmed', 
+            'password' => 'required|min:6|confirmed',
+            'nowpassword' => 'nullable',
         ]);
 
         $student = StudentsVerifiy::where('student_id', $id)->first();
-        $validated['password'] = Hash::make($request->password);
-        if($student){
-            $student->update($validated);
-        }else{
+        if ($student) {
+            // Joriy parolni tekshirish
+            if (!Hash::check($request->nowpassword, $student->password)) {
+                return back()->with('error', 'Joriy parol noto‘g‘ri!');
+            }
+
+            // Yangi parolni saqlash
+            $student->password = Hash::make($request->password);
+            $student->save();
+        } else {
+            // Yangi foydalanuvchi yaratish
             StudentsVerifiy::create([
                 'student_id' => $id,
-                'password' => $validated['password']
+                'password' => Hash::make($request->password)
             ]);
         }
+
         return back()->with('success', 'Parolingiz saqlandi!');
     }
 }

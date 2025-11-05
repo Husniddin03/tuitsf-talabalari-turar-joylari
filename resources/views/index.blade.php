@@ -7,6 +7,32 @@
     <title>Admin Panel - Talabalar va Foydalanuvchilar</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <style>
+        .alert-custom {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            width: 100%;
+            display: block;
+        }
+
+        /* Xato (error) uchun */
+        .alert-custom.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        /* Muvaffaqiyat (success) uchun */
+        .alert-custom.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+    </style>
 </head>
 
 <body>
@@ -60,6 +86,17 @@
         </div>
     </header>
 
+    @if (session('error'))
+        <div class="alert-custom error" role="alert">
+            {{ session('error') }}
+        </div>
+    @elseif(session('success'))
+        <div class="alert-custom success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    
     <!-- Main Content -->
     <main class="main">
         <div class="container">
@@ -455,7 +492,7 @@
                 <div id="yotoqxona" class="form-group">
                     <label for="yotoqxona_nomeri">Yotoqxona raqami</label>
                     <select id="yotoqxona_nomeri" name="yotoqxona_nomeri" class="edu-center-input">
-                        <option value="" disabled selected>Tumanni tanlang...</option>
+                        <option value="" disabled selected>Yotoqxona nomerini tanlang...</option>
                         <option value="1-sonli">1-sonli</option>
                         <option value="2-sonli">2-sonli</option>
                         <option value="3-sonli">3-sonli</option>
@@ -733,6 +770,8 @@
     const dormity = document.getElementById('dormity');
     const yotoqxona = document.getElementById('yotoqxona');
     const ijara = document.getElementById('ijara');
+
+    yotoqxona.style.display = 'none';
 
     // Funksiya: berilgan element ichidagi input/selectlarni tozalaydi
     function clearInputs(container) {

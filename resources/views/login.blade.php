@@ -80,10 +80,45 @@
             margin-top: 40px;
             letter-spacing: 4px
         }
+
+        .alert-custom {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            width: 100%;
+            display: block;
+        }
+
+        /* Xato (error) uchun */
+        .alert-custom.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        /* Muvaffaqiyat (success) uchun */
+        .alert-custom.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
     </style>
 </head>
 
 <body>
+    @if (session('error'))
+        <div class="alert-custom error" role="alert">
+            {{ session('error') }}
+        </div>
+    @elseif(session('success'))
+        <div class="alert-custom success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="login-box">
         <h2>Login</h2>
         <form action="{{ route('checkAuth') }}" method="post">

@@ -90,6 +90,15 @@
 
 <body>
     <div class="container my-5">
+        @if (session('error'))
+            <div class="text-center alert alert-danger" role="alert">
+                {{ session('error') }}
+            </div>
+        @elseif(session('success'))
+            <div class="text-center alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="text-end my-3 text-danger">
             <form action="{{ route('verifiy.logout') }}" method="post" class="m-0 p-0">
                 @csrf
@@ -208,6 +217,20 @@
                     @csrf
                     <h5 class="text-secondary mb-3">Yangi parol</h5>
                     <div class="row g-3 mb-4">
+                        @if (isset($student->verifiy->password))
+                            <div class="col-md-6">
+                                <label for="nowpassword" class="form-label">Joriy parol</label>
+                                <input name="nowpassword" type="password" id="nowpassword" class="form-control"
+                                    required>
+                                @error('nowpassword')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                                @if (session('error'))
+                                    <div class="text-danger">{{ session('error') }}</div>
+                                @endif
+                            </div>
+                        @endif
+                        <div class="col-12"></div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Yangi parol</label>
                             <input name="password" type="password" id="password" class="form-control" required>
@@ -219,9 +242,6 @@
                             <label for="password_confirm" class="form-label">Yangi parol qaytaring</label>
                             <input name="password_confirmation" type="password" id="password_confirm"
                                 class="form-control" required>
-                            @error('password_confirmation')
-                                Parolingiz mos kelmadi
-                            @enderror
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-4 w-100">✏️ Parolni saqlash</button>
@@ -242,7 +262,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label for="talaba_id" class="form-label">Talaba ID *</label>
-                            <input name="talaba_id" value="{{ $student->talaba_id ?? '' }}" type="number"
+                            <input readonly name="talaba_id" value="{{ $student->talaba_id ?? '' }}" type="number"
                                 id="talaba_id" class="form-control" required>
                         </div>
                         <div class="col-md-6">
@@ -371,8 +391,7 @@
                         </div>
                     </div>
 
-                    <div id="yotoqxona" class="mb-4"
-                        style="display: {{ isset($student->dormity) && $student->dormity == 1 ? 'block' : 'none' }};">
+                    <div id="yotoqxona" class="mb-4" style="display: none;">
                         <label for="yotoqxona_nomeri" class="form-label">Yotoqxona raqami</label>
                         <select id="yotoqxona_nomeri" name="yotoqxona_nomeri" class="form-select">
                             <option value="" disabled selected>Yotoqxona nomerini tanlang...</option>
