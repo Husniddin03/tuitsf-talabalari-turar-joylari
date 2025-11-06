@@ -135,6 +135,7 @@
         <form action="{{ route('verifiy.chekLogin') }}" method="POST">
             @csrf
             <div class="user-box">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="number" name="talaba_id" value="{{ session('talaba_id') ?? old('talaba_id') }}" required>
                 @error('talaba_id')
                     {{$message}}

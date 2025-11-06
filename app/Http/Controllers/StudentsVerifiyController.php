@@ -44,8 +44,7 @@ class StudentsVerifiyController extends Controller
         $student = Student::where('talaba_id', $request->talaba_id)->first();
 
         if (!$student) {
-            return redirect()->back()
-                ->withInput()
+            return redirect()->route('verifiy.login')
                 ->with('error', "Siz tizimda mavjud emassiz!");
         }
 
@@ -57,8 +56,7 @@ class StudentsVerifiyController extends Controller
         }
 
         if (!$request->filled('password')) {
-            return redirect()->back()
-                ->withInput()
+            return redirect()->route('verifiy.login')
                 ->with('talaba_id', $request->talaba_id);
         }
 
@@ -67,8 +65,8 @@ class StudentsVerifiyController extends Controller
             return redirect('verifiy/index')->with('success', "Tizimga Muoffaqiyatli kirdingiz");
         }
 
-        return redirect()->back()
-            ->withInput(['talaba_id' => $request->talaba_id])
+        return redirect()->route('verifiy.login')
+            ->with('talaba_id', $request->talaba_id)
             ->with('error', 'Parol noto\'g\'ri!');
     }
 
