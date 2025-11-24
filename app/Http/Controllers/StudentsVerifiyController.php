@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\StudentExport;
 use App\Models\Student;
 use App\Models\StudentsVerifiy;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
@@ -147,5 +148,24 @@ class StudentsVerifiyController extends Controller
         $fileName = 'students_' . time() . '.xlsx';
 
         return Excel::download($export, $fileName);
+    }
+
+    public function forget() {
+        $admins = User::where('role', 'super_admin')->get();
+        return view('verifiy.forget', compact('admins'));
+    }
+
+    public function sendMessage(Request $request) {
+        $data = $request->validate([
+            'talaba_id' => 'required|digits:12|exists:students,talaba_id',
+            'name' => 'required',
+            'guruh' => 'required',
+            'take' => 'required',
+            'chat_id' => 'required|exists:users,chat_id',
+        ]);
+
+        $Telegram = new TelegramBotController;
+        $Telegram->sendForgetPasswrod($data);
+        return redirect()->route('verifiy.login')->with('success', 'So\'rov yuborildi tez orada javob olasiz');
     }
 }

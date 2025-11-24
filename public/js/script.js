@@ -518,7 +518,7 @@ class DataManager {
             formData.append(key, updatedUser[key]);
         }
         formData.append("_method", "PUT");
-        
+
         const csrfToken = document.querySelector('input[name="_token"]')?.value;
         if (csrfToken) formData.append("_token", csrfToken);
 
@@ -957,7 +957,7 @@ class UIManager {
                     (student) => `
                 <tr>
                    <td>${student.id}</td>
-                        <td><strong>${student.talaba_id || "-"}</strong></td>
+                        <td><a href='/student/${student.id}'><strong>${student.talaba_id || "-"}</strong></a></td>
                     <td><strong>${student.fish || "-"}</strong></td>
                     <td><span class="badge badge-secondary">${
                         student.fakultet || "-"

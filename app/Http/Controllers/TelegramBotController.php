@@ -104,4 +104,20 @@ class TelegramBotController extends Controller
             'parse_mode' => 'Markdown',
         ]);
     }
+
+    public function sendForgetPasswrod($data)
+    {
+        Telegram::sendMessage([
+            'chat_id' => $data['chat_id'],
+            'text' => "*🔐 Parolni unutdim so'rovi*\n\n" .
+                "*👤 Talaba ID:* `{$data['talaba_id']}`\n" .
+                "*📛 Ism:* {$data['name']}\n" .
+                "*👥 Guruh:* {$data['guruh']}\n\n" .
+                "*📨 Parolni shu manzilga yuboring:* `{$data['take']}`",
+            'parse_mode' => 'Markdown',
+        ]);
+
+
+        return true;
+    }
 }

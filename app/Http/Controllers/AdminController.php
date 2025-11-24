@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
+use App\Models\StudentsVerifiy;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -70,5 +72,30 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'Foydalanuvchi muvaffaqiyatli o‘chirildi!'
         ]);
+    }
+
+    public function student($id)
+    {
+        $student = Student::find($id);
+        return view('student', compact('student'));
+    }
+    public function newPassword(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $student = StudentsVerifiy::where('student_id', $id)->first();
+        if ($student) {
+            $student->password = Hash::make($request->password);
+            $student->save();
+        } else {
+            StudentsVerifiy::create([
+                'student_id' => $id,
+                'password' => Hash::make($request->password)
+            ]);
+        }
+
+        return back()->with('success', 'Parolingiz o\'zgartirildi!');
     }
 }

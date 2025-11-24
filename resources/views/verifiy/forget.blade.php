@@ -35,7 +35,7 @@
             position: relative;
         }
 
-        .login-box .user-box input,
+        .login-box .user-box input, select,
         button {
             width: 100%;
             padding: 10px 0;
@@ -132,27 +132,57 @@
             <div class="error">{{ session('error') }}</div>
         @endif
 
-        <form action="{{ route('verifiy.chekLogin') }}" method="POST">
+        <form action="{{ route('verifiy.sendMessage') }}" method="POST">
             @csrf
             <div class="user-box">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="number" name="talaba_id" value="{{ session('talaba_id') ?? old('talaba_id') }}" required>
                 @error('talaba_id')
-                    {{$message}}
+                    {{ $message }}
                 @enderror
-                <label>Student ID</label>
+                <label>ID rqamingiz</label>
             </div>
 
-            @if (session('talaba_id'))
-                <div class="user-box">
-                    <input type="password" name="password" required>
-                    <label>Parol</label>
-                </div>
-            @endif
+            <div class="user-box">
+                <input type="text" name="name" value="{{ session('name') ?? old('name') }}" required>
+                @error('name')
+                    {{ $message }}
+                @enderror
+                <label>Ismingiz</label>
+            </div>
 
-            <button style="cursor: pointer" type="submit">Kirish</button>
+            <div class="user-box">
+                <input type="text" name="guruh" value="{{ session('guruh') ?? old('guruh') }}" required>
+                @error('guruh')
+                    {{ $message }}
+                @enderror
+                <label>Guruhingiz</label>
+            </div>
+
+            <div class="user-box">
+                <input type="text" name="take" value="{{ session('take') ?? old('take') }}" required>
+                @error('take')
+                    {{ $message }}
+                @enderror
+                <label>Telefon, Email, Telegram ....</label>
+            </div>
+
+             <div class="user-box">
+                <select name="chat_id" id="">
+                    <option value="" selected disabled>Parolni tiklaydigan shaxs</option>
+                    @foreach ($admins as $admin)
+                        @if ($admin->chat_id)
+                            <option value="{{$admin->chat_id}}">{{$admin->name}}</option>
+                        @endif
+                    @endforeach
+                </select>
+                @error('chat_id')
+                    {{ $message }}
+                @enderror
+            </div>
+
+            <button style="cursor: pointer" type="submit">Yuborish</button>
         </form>
-        <a href="{{route('verifiy.forget')}}">Parolni unutdim?</a>
+        <a href="{{route('verifiy.login')}}">Kirish</a>
     </div>
 </body>
 
