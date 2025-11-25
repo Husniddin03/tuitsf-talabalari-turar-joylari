@@ -100,7 +100,8 @@
             </div>
         @endif
         <div class="text-end my-3">
-            <form style="display: flex; flex-direction: column; align-items: flex-end" action="{{ route('verifiy.logout') }}" method="post" class="m-0 p-0 text-end">
+            <form style="display: flex; flex-direction: column; align-items: flex-end"
+                action="{{ route('verifiy.logout') }}" method="post" class="m-0 p-0 text-end">
                 @csrf
                 <button type="submit" class="text-danger settings-btn m-0" id="">
                     <img width="24" height="24"
@@ -171,6 +172,10 @@
                         <div class="col-md-6">
                             <p class="mb-0"><strong>Yotoqxona Nomeri:</strong>
                                 {{ $student->yotoqxona_nomeri ?? '—' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-0"><strong>Xona raqami:</strong>
+                                {{ $student->xona_raqami ?? '—' }}</p>
                         </div>
                     @else
                         <div class="col-md-6">
@@ -396,20 +401,31 @@
                     </div>
 
                     <div id="yotoqxona" class="mb-4" style="display: none;">
-                        <label for="yotoqxona_nomeri" class="form-label">Yotoqxona raqami</label>
-                        <select id="yotoqxona_nomeri" name="yotoqxona_nomeri" class="form-select">
-                            <option value="" disabled selected>Yotoqxona nomerini tanlang...</option>
-                            <option value="1-sonli"
-                                {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '1-sonli' ? 'selected' : '' }}>
-                                1-sonli</option>
-                            <option value="2-sonli"
-                                {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '2-sonli' ? 'selected' : '' }}>
-                                2-sonli</option>
-                            <option value="3-sonli"
-                                {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '3-sonli' ? 'selected' : '' }}>
-                                3-sonli</option>
-                        </select>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="yotoqxona_nomeri" class="form-label">Yotoqxona raqami</label>
+                                <select id="yotoqxona_nomeri" name="yotoqxona_nomeri" class="form-select">
+                                    <option value="" disabled selected>Yotoqxona nomerini tanlang...</option>
+                                    <option value="1-sonli"
+                                        {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '1-sonli' ? 'selected' : '' }}>
+                                        1-sonli</option>
+                                    <option value="2-sonli"
+                                        {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '2-sonli' ? 'selected' : '' }}>
+                                        2-sonli</option>
+                                    <option value="3-sonli"
+                                        {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '3-sonli' ? 'selected' : '' }}>
+                                        3-sonli</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="xonaRaqami" class="form-label">Xona Raqami</label>
+                                <input name="xona_raqami" value=""
+                                    type="text" id="xonaRaqami" class="form-control">
+                            </div>
+                        </div>
                     </div>
+
+
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">

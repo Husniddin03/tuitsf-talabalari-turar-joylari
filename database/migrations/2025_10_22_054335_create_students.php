@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('uy_egasi')->nullable();
             $table->string('uy_egasi_telefoni')->nullable();
             $table->string('yotoqxona_nomeri')->nullable();
+            $table->integer('xona_raqami')->nullable();
             $table->integer('narx')->nullable();
             $table->string('ota_ona')->nullable();
             $table->string('ota_ona_telefoni')->nullable();

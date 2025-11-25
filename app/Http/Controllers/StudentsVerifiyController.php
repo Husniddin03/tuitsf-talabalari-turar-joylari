@@ -94,6 +94,7 @@ class StudentsVerifiyController extends Controller
             'uy_egasi' => 'nullable|string|max:255',
             'uy_egasi_telefoni' => 'nullable|string|max:255',
             'yotoqxona_nomeri' => 'nullable|string|max:255',
+            'xona_raqami' => 'nullable|string|max:10',
             'narx' => 'nullable|string|max:255',
             'ota_ona' => 'nullable|string|max:255',
             'ota_ona_telefoni' => 'nullable|string|max:255',

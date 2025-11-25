@@ -37,7 +37,8 @@
             .download-btn {
                 flex-direction: column;
             }
-            .download-btn button{
+
+            .download-btn button {
                 width: 100%;
                 margin-top: 8px;
             }
@@ -256,6 +257,7 @@
                                                 class="sort-icon">↕</span></th>
                                         <th data-sort="yotoqxona_nomeri">Yotoqxona nomeri <span
                                                 class="sort-icon">↕</span></th>
+                                        <th data-sort="xona_raqami">Xona raqami <span class="sort-icon">↕</span></th>
                                         <th data-sort="narx">Narxi <span class="sort-icon">↕</span></th>
                                         <th data-sort="ota_ona">Ota ona <span class="sort-icon">↕</span></th>
                                         <th data-sort="ota_ona_telefoni">Ota ona telefoni <span
@@ -504,14 +506,28 @@
                     </div>
                 </div>
 
-                <div id="yotoqxona" class="form-group">
-                    <label for="yotoqxona_nomeri">Yotoqxona raqami</label>
-                    <select id="yotoqxona_nomeri" name="yotoqxona_nomeri" class="edu-center-input">
-                        <option value="" disabled selected>Yotoqxona nomerini tanlang...</option>
-                        <option value="1-sonli">1-sonli</option>
-                        <option value="2-sonli">2-sonli</option>
-                        <option value="3-sonli">3-sonli</option>
-                    </select>
+                <div id="yotoqxona" class="row mb-4" style="display: none;">
+                    <div class="form-group">
+
+                        <label for="yotoqxona_nomeri" class="form-label">Yotoqxona raqami</label>
+                        <select id="yotoqxona_nomeri" name="yotoqxona_nomeri" class="form-select">
+                            <option value="" disabled selected>Yotoqxona nomerini tanlang...</option>
+                            <option value="1-sonli"
+                                {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '1-sonli' ? 'selected' : '' }}>
+                                1-sonli</option>
+                            <option value="2-sonli"
+                                {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '2-sonli' ? 'selected' : '' }}>
+                                2-sonli</option>
+                            <option value="3-sonli"
+                                {{ isset($student->yotoqxona_nomeri) && $student->yotoqxona_nomeri == '3-sonli' ? 'selected' : '' }}>
+                                3-sonli</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="xona_raqami">Xona raqami</label>
+                        <input name="xona_raqami" type="text" id="xona_raqami">
+                    </div>
+
                 </div>
 
                 <div class="form-group">
@@ -670,15 +686,11 @@
         geocoder = new google.maps.Geocoder();
 
         createMap("mapPermanent", {
-            region: "doimiy_yashash_viloyati",
-            district: "doimiy_yashash_tumani",
             address: "doimiy_yashash_manzili",
             url: "doimiy_yashash_manzili_urli"
         });
 
         createMap("mapTemporary", {
-            region: "vaqtincha_yashash_viloyati",
-            district: "vaqtincha_yashash_tumani",
             address: "vaqtincha_yashash_manzili",
             url: "vaqtincha_yashash_manzili_urli"
         });

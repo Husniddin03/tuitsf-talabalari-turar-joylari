@@ -25,6 +25,7 @@ class Student extends Model
         'uy_egasi',
         'uy_egasi_telefoni',
         'yotoqxona_nomeri',
+        'xona_raqami',
         'narx',
         'ota_ona',
         'ota_ona_telefoni',

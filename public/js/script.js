@@ -279,6 +279,7 @@ class DataManager {
                 uy_egasi: student.uy_egasi || "",
                 uy_egasi_telefoni: student.uy_egasi_telefoni || "",
                 yotoqxona_nomeri: student.yotoqxona_nomeri || "",
+                xona_raqami: student.xona_raqami || "",
                 narx: student.narx || "",
                 ota_ona: student.ota_ona || "",
                 ota_ona_telefoni: student.ota_ona_telefoni || "",
@@ -957,7 +958,9 @@ class UIManager {
                     (student) => `
                 <tr>
                    <td>${student.id}</td>
-                        <td><a href='/student/${student.id}'><strong>${student.talaba_id || "-"}</strong></a></td>
+                        <td><a href='/student/${student.id}'><strong>${
+                        student.talaba_id || "-"
+                    }</strong></a></td>
                     <td><strong>${student.fish || "-"}</strong></td>
                     <td><span class="badge badge-secondary">${
                         student.fakultet || "-"
@@ -993,6 +996,7 @@ class UIManager {
                     <td>${student.uy_egasi || "-"}</td>
                     <td>${student.uy_egasi_telefoni || "-"}</td>
                     <td>${student.yotoqxona_nomeri || "-"}</td>
+                    <td>${student.xona_raqami || "-"}</td>
                     <td>${student.narx || "-"}</td>
                     <td>${student.ota_ona || "-"}</td>
                     <td>${student.ota_ona_telefoni || "-"}</td>
@@ -1298,6 +1302,8 @@ class UIManager {
                 student.uy_egasi_telefoni || "";
             document.getElementById("yotoqxona_nomeri").value =
                 student.yotoqxona_nomeri || "";
+            document.getElementById("xona_raqami").value =
+                student.xona_raqami || "";
             document.getElementById("studentNarxi").value = student.narx || "";
             document.getElementById("studentOtaOna").value =
                 student.ota_ona || "";
@@ -1356,6 +1362,8 @@ class UIManager {
                 document.getElementById("studentUyEgasiTelefoni")?.value || "",
             yotoqxona_nomeri:
                 document.getElementById("yotoqxona_nomeri")?.value || "",
+            xona_raqami:
+                document.getElementById("xona_raqami")?.value || "",
             narx: document.getElementById("studentNarxi")?.value || "",
             ota_ona: document.getElementById("studentOtaOna")?.value || "",
             ota_ona_telefoni:
